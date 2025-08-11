@@ -1,8 +1,6 @@
-const squares = []
-
 function spawnSquares(CVS) {
     const squareWidth = 130, squareHeight = 130, sectionWidth = CVS.width/3, sectionHeight = CVS.height/3,
-          render = CVS.render, squareBgColor = [42, 36, 45, 1], squareBorderColor = [62, 66, 75, 1]
+          render = CVS.render, squareBgColor = [42, 36, 45, 1], squareBorderColor = [62, 66, 75, 1], squares = []
 
     for (let i=0,x=0,y=0;i<9;i++) {
         x=i%3
@@ -22,5 +20,5 @@ function spawnSquares(CVS) {
         CVS.add(square)
     }
 
+    return squares
 }
-spawnSquares(CVS)
