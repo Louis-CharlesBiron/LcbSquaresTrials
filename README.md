@@ -17,10 +17,17 @@ GAMPELAY
 
 - 9 rooms, that you have to go through
 - 2d plateformer
-- semi puzzle? Like, "Oh I need a key, dang it is in this other room"
+
+maybes
+- *semi puzzle? Like, "Oh I need a key, dang it is in this other room"?*
 
 
 
-- NO CONTEXT IDEAS
+### NO CONTEXT IDEAS
 - you draw your own character
 - you can go outside the game
+
+- water room
+- click to tp room?
+- gravity changing room
+- a hidden pipe to traverse from and to a room
