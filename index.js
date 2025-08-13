@@ -8,7 +8,11 @@ const player = new Player(CVS),
       squares = spawnSquares(CVS)
 
 
-player.activeSquare = squares[4]
+//player.activeSquare = squares[4]
+
+const TEMP_BOUNDS = squares[4].getBounds()
+player.addDefaultCollision([[TEMP_BOUNDS[0][0], TEMP_BOUNDS[1][1]], TEMP_BOUNDS[1]])
+
 
 const testCol = new FilledShape("blue", true, CDEUtils.addPos(CVS.getCenter(), [-50]), [
     new Dot([-30, -30]),
@@ -17,8 +21,7 @@ const testCol = new FilledShape("blue", true, CDEUtils.addPos(CVS.getCenter(), [
     new Dot([-30, 30]),
 ])
 CVS.add(testCol)
-player.collisions.push(testCol)
-
+//player.collisions.push(testCol)
 
 const testCol2 = new FilledShape("blue", true, CDEUtils.addPos(CVS.getCenter(), [50, 50]), [
     new Dot([-30, -30]),
@@ -27,7 +30,7 @@ const testCol2 = new FilledShape("blue", true, CDEUtils.addPos(CVS.getCenter(), 
     new Dot([-30, 30]),
 ])
 CVS.add(testCol2)
-player.collisions.push(testCol2)
+//player.collisions.push(testCol2)
 
 
 // USER ACTIONS
