@@ -46,14 +46,16 @@ class Player {
             if (this._jumpAnim) this._jumpAnim.getFrame(CVS.timeStamp, CVS.deltaTime)
 
 
-            // GRAVITY (kinda water physics rn)
-            if (this._physicalState == Player.PHYSICAL_STATES.AIR) this._nextPosY += 350*CVS.deltaTime
+            // GRAVITY
+            //if (this._physicalState == Player.PHYSICAL_STATES.AIR)
+                this._nextPosY += 350*CVS.deltaTime
 
             // COLLISIONS
             const collisions = this.collisions, c_ll = collisions.length
             for (let i=0;i<c_ll;i++) {
                 const collision = collisions[i]
-                collision.detect(player.pos)
+                collision.detect([this._nextPosX, this._nextPosY])
+                collision.show(CVS.render)
             }
 
 
@@ -79,17 +81,18 @@ class Player {
         this._interactions.left = keyboard.isDown(keys.LEFT)
     }
 
-    addDefaultCollision(positions, name) {
-        const player = this._obj
-        this._collisions.push(new Collision(name, positions, player.radius,
+    addDefaultCollision(positions, name, padding=0) {
+        const player = this._obj, collision = new Collision(name, positions, padding,
             (dir)=>{
-                console.log(dir)
+                const pos1 = collision.positions[0], pos2 = collision.positions[1], radius = player.radius
+                if (dir == Collision.DIRECTIONS.RIGHT && this._nextPosX < pos2[0]) this._nextPosX = pos2[0]
+                else if (dir == Collision.DIRECTIONS.LEFT && this._nextPosX > pos1[0]) this._nextPosX = pos1[0]
+                if (dir == Collision.DIRECTIONS.TOP && this._nextPosY > pos1[1]) this._nextPosY = pos1[1]
+                else if (dir == Collision.DIRECTIONS.BOTTOM && this._nextPosY < pos2[1]) this._nextPosY = pos2[1]
             },
             (dir)=>{
-                console.log("ENTER", dir)
-                if (dir==Collision.DIRECTIONS.TOP) {
-                    console.log("ground ig")
-                    player.y = positions[0][1]-20
+                //console.log("ENTER", dir)
+                if (dir==Collision.DIRECTIONS.TOP) {// GROUND
                     this._physicalState = Player.PHYSICAL_STATES.GROUND
                 }
             },
@@ -97,7 +100,19 @@ class Player {
                 if (dir==Collision.DIRECTIONS.TOP) this._physicalState = Player.PHYSICAL_STATES.AIR
                 console.log("LEAVE", dir)
             })
-        )
+        this._collisions.push(collision)
+    }
+
+    addDefaultSquareCollision(square) {
+        const bounds = square.getBounds(), squarePadding = 10
+        this.addDefaultCollision([bounds[0], [bounds[1][0], bounds[0][1]]], "squareTop"+square.id   , squarePadding) //TOP
+        this.addDefaultCollision([[bounds[1][0], bounds[0][1]], bounds[1]], "squareRight"+square.id , squarePadding) //RIGHT
+        this.addDefaultCollision([[bounds[0][0], bounds[1][1]], bounds[1]], "squareBottom"+square.id, squarePadding) //BOTTOM
+        this.addDefaultCollision([bounds[0], [bounds[0][0], bounds[1][1]]], "squareLeft"+square.id  , squarePadding) //LEFT
+    }
+
+    updateRadius(newRadius) {
+        this._obj.radius = newRadius
     }
 
     get obj() {return this._obj}

@@ -10,27 +10,30 @@ const player = new Player(CVS),
 
 //player.activeSquare = squares[4]
 
-const TEMP_BOUNDS = squares[4].getBounds()
-player.addDefaultCollision([[TEMP_BOUNDS[0][0], TEMP_BOUNDS[1][1]], TEMP_BOUNDS[1]])
+//const TEMP_BOUNDS = squares[4].getBounds()
+//player.addDefaultCollision([[TEMP_BOUNDS[0][0], TEMP_BOUNDS[1][1]], TEMP_BOUNDS[1]])//bottom
+//player.addDefaultCollision([TEMP_BOUNDS[0], [TEMP_BOUNDS[0][0], TEMP_BOUNDS[1][1]]])//left
+player.addDefaultSquareCollision(squares[4])
 
+player.updateRadius(15)
 
-const testCol = new FilledShape("blue", true, CDEUtils.addPos(CVS.getCenter(), [-50]), [
+const testCol = new FilledShape("grey", true, CDEUtils.addPos(CVS.getCenter(), [-50]), [
     new Dot([-30, -30]),
     new Dot([30, -30]),
     new Dot([30, 30]),
     new Dot([-30, 30]),
 ])
 CVS.add(testCol)
-//player.collisions.push(testCol)
+player.addDefaultCollision(testCol)
 
-const testCol2 = new FilledShape("blue", true, CDEUtils.addPos(CVS.getCenter(), [50, 50]), [
+const testCol2 = new FilledShape("grey", true, CDEUtils.addPos(CVS.getCenter(), [50, 50]), [
     new Dot([-30, -30]),
     new Dot([30, -30]),
     new Dot([30, 30]),
     new Dot([-30, 30]),
 ])
 CVS.add(testCol2)
-//player.collisions.push(testCol2)
+player.addDefaultCollision(testCol2)
 
 
 // USER ACTIONS

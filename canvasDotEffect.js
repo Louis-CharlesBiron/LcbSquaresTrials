@@ -577,26 +577,8 @@ class CanvasUtils {
         canvas.add(t_d2)
     }
 
-        /**
-     * Creates a callback that detects when a pos intersects with the area defined by "positions"
-     * @param {_BaseObj | [[x1,y1], [x2,y2]]} positions: either a _BaseObj inheritor instance or a positions array defining the area
-     * @param {Number | [paddingTop, paddingRight?, paddingBottom?, paddingLeft?] ?} padding: the padding applied to the area
-     * @param {Function?} onCollisionCB: Function called each frame the pos is inside the area. (collisionDirection)=>{...}
-     * @param {Function?} onCollisionEnterCB: Function called once each time a collision is detected. (collisionDirection)=>{...}
-     * @param {Function?} onCollisionExitCB: Function called once each time a collision is ended. (collisionDirection)=>{...}
-     * @param {boolean?} disableCornerDetection: If true, prevents 'collisionDirection' in collision callbacks to contain more than more direction when colliding with corners
-     * @returns a callback that checks for collision
-     */
-        static getCollisionCB(positions, padding=null, onCollisionCB, onCollisionEnterCB, onCollisionExitCB, disableCornerDetection) {
+        static getCollisionCB(positions, onCollisionCB, onCollisionEnterCB, onCollisionExitCB, disableCornerDetection) {
             const bounds = positions instanceof _BaseObj ? positions.getBounds() : positions, isTop = 1<<0, isRight = 1<<1, isBottom = 1<<2, isLeft = 1<<3, all = (1<<4)-1, hasCB = CDEUtils.isFunction(onCollisionCB), hasEnterCB = CDEUtils.isFunction(onCollisionEnterCB), hasExitCB = CDEUtils.isFunction(onCollisionExitCB)
-    
-            if (padding) {
-                padding = typeof padding=="number" ? [padding, padding, padding, padding] : [padding[0],padding[1]??padding[0], padding[2]??padding[0], padding[3]??padding[1]]
-                bounds[0][0] -= padding[3]
-                bounds[0][1] -= padding[0]
-                bounds[1][0] += padding[1]
-                bounds[1][1] += padding[2]
-            }
     
             let lastNotCollidingDirection = 0, hasCollision = false
             return (pos)=>{
