@@ -19,9 +19,9 @@ class Player {
         this._nextPosY = null
 
         this._collisions = []
-        this._activeSquare = null
         this._physicalState = false
-        const interactions = this._interactions = {up:null, down:null, right:null, left:null}
+        const interactions = this._interactions = {up:null, down:null, right:null, left:null},
+              settings = this._settings = {showHitboxes:false, noclip:false}
 
         CVS.add(this._obj)
 
@@ -41,23 +41,21 @@ class Player {
             if (this._physicalState && interactions.up && !this._jumpAnim) {
                 this._jumpAnim = new Anim((prog, i, deltaTime)=>{
                     this._nextPosY -= (1-prog)*this._jumpHeight*deltaTime
-                }, this._jumpDuration, Anim.easeInOutQuad, ()=>this._jumpAnim = null)
+                }, this._jumpDuration, Anim.easeInOutQuad, ()=>this._jumpAnim=null)
             }
             if (this._jumpAnim) this._jumpAnim.getFrame(CVS.timeStamp, CVS.deltaTime)
 
 
             // GRAVITY
-            //if (this._physicalState == Player.PHYSICAL_STATES.AIR)
-                this._nextPosY += 350*CVS.deltaTime
+            this._nextPosY += 350*CVS.deltaTime
 
             // COLLISIONS
             const collisions = this.collisions, c_ll = collisions.length
             for (let i=0;i<c_ll;i++) {
                 const collision = collisions[i]
-                collision.detect([this._nextPosX, this._nextPosY])
-                collision.show(CVS.render)
+                if (!settings.noclip) collision.detect([this._nextPosX, this._nextPosY])
+                if (settings.showHitboxes) collision.show(CVS.render)
             }
-
 
             // MOVE
             player.x = this._nextPosX
@@ -81,10 +79,10 @@ class Player {
         this._interactions.left = keyboard.isDown(keys.LEFT)
     }
 
-    addDefaultCollision(positions, name, padding=0) {
-        const player = this._obj, collision = new Collision(name, positions, padding,
-            (dir)=>{
-                const pos1 = collision.positions[0], pos2 = collision.positions[1], radius = player.radius
+    addDefaultCollision(positions, name, padding=this._obj.radius-2) {
+        const collision = new Collision(name, positions, padding,
+            (dir, col)=>{
+                const positions = col.getPositionsValue(), pos1 = positions[0], pos2 = positions[1]
                 if (dir == Collision.DIRECTIONS.RIGHT && this._nextPosX < pos2[0]) this._nextPosX = pos2[0]
                 else if (dir == Collision.DIRECTIONS.LEFT && this._nextPosX > pos1[0]) this._nextPosX = pos1[0]
                 if (dir == Collision.DIRECTIONS.TOP && this._nextPosY > pos1[1]) this._nextPosY = pos1[1]
@@ -98,13 +96,13 @@ class Player {
             },
             (dir)=>{
                 if (dir==Collision.DIRECTIONS.TOP) this._physicalState = Player.PHYSICAL_STATES.AIR
-                console.log("LEAVE", dir)
+                //console.log("LEAVE", dir)
             })
         this._collisions.push(collision)
     }
 
     addDefaultSquareCollision(square) {
-        const bounds = square.getBounds(), squarePadding = 10
+        const bounds = square.getBounds(), squarePadding = this._obj.radius
         this.addDefaultCollision([bounds[0], [bounds[1][0], bounds[0][1]]], "squareTop"+square.id   , squarePadding) //TOP
         this.addDefaultCollision([[bounds[1][0], bounds[0][1]], bounds[1]], "squareRight"+square.id , squarePadding) //RIGHT
         this.addDefaultCollision([[bounds[0][0], bounds[1][1]], bounds[1]], "squareBottom"+square.id, squarePadding) //BOTTOM
@@ -113,13 +111,18 @@ class Player {
 
     updateRadius(newRadius) {
         this._obj.radius = newRadius
+        const collisions = this.collisions, c_ll = collisions.length
+        for (let i=0;i<c_ll;i++) {
+            const collision = collisions[i]
+            if (collision.name.startsWith("square")) collision.padding = newRadius
+            else collision.padding = newRadius-2
+        }
     }
 
     get obj() {return this._obj}
 	get speed() {return this._speed}
 	get collisions() {return this._collisions}
 	get interactions() {return this._interactions}
-    get activeSquare() {return this._activeSquare}
     get isOnGround() {return this._physicalState==Player.PHYSICAL_STATES.GROUND}
     get physicalState() {return this._physicalState}
 
@@ -127,6 +130,4 @@ class Player {
 	set speed(_speed) {this._speed = _speed}
 	set collisions(_collisions) {this._collisions = _collisions}
 	set interactions(_interactions) {this._interactions = _interactions}
-    set activeSquare(activeSquare) {this._activeSquare = activeSquare} 
-
 }

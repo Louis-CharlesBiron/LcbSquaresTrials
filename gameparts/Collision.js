@@ -16,7 +16,6 @@ class Collision {
      */
     constructor(name, positions, padding, onCollisionCB, onCollisionEnterCB, onCollisionExitCB, disableCornerDetection) {
         this._id = Collision.#ID_GIVER++
-
         this._name = name??Collision.DEFAULT_COLLISION_NAME
         this.positions = positions
         this.padding = padding??0
@@ -29,55 +28,56 @@ class Collision {
         this._lastNotCollidingDirection = null
     }
 
-    updateDetectCB(positions, padding, onCollisionCB, onCollisionEnterCB, onCollisionExitCB, disableCornerDetection) {
-        if (positions) this.positions = positions
-        if (padding) this.padding = padding
-        if (onCollisionCB) this._onCollisionCB = onCollisionCB 
-        if (onCollisionEnterCB) this._onCollisionEnterCB = onCollisionEnterCB 
-        if (onCollisionExitCB) this._onCollisionExitCB = onCollisionExitCB 
-        if (disableCornerDetection) this._disableCornerDetection = disableCornerDetection 
-        return CanvasUtils.getCollisionCB(positions??this._positions, onCollisionCB??this._onCollisionCB, onCollisionEnterCB??this._onCollisionEnterCB, onCollisionExitCB??this._onCollisionExitCB, disableCornerDetection??this._disableCornerDetection)
-    }
+    detect(pos, lastPos) {
+        const top = Collision.DIRECTIONS.TOP, right = Collision.DIRECTIONS.RIGHT, bottom = Collision.DIRECTIONS.BOTTOM, left = Collision.DIRECTIONS.LEFT, all = Collision.DIRECTIONS.ALL,
+        x = pos[0], y = pos[1], positions = this.getPositionsValue(), collisions = ((y>=positions[0][1])&&top)+((x<=positions[1][0])&&right)+((y<=positions[1][1])&&bottom)+((x>=positions[0][0])&&left)
 
-    detect(pos) {
-        const top = Collision.DIRECTIONS.TOP, right = Collision.DIRECTIONS.RIGHT, bottom = Collision.DIRECTIONS.BOTTOM, left = Collision.DIRECTIONS.LEFT, all = Collision.DIRECTIONS.ALL, positions = this._positions,
-              x = pos[0], y = pos[1], collisions = ((y>=positions[0][1])&&top)+((x<=positions[1][0])&&right)+((y<=positions[1][1])&&bottom)+((x>=positions[0][0])&&left) 
-
-            if (collisions==all) {
-                if (this._onCollisionEnterCB && !this._hasCollision) this._onCollisionEnterCB(this._lastNotCollidingDirection, this)
-                this._hasCollision = true
-                if (this._onCollisionCB) this._onCollisionCB(this._lastNotCollidingDirection, this)
-            } else {
-                this._lastNotCollidingDirection = collisions^all
-                if (this._disableCornerDetection) {
-                    if (this._lastNotCollidingDirection == top+right || this._lastNotCollidingDirection == top+left) this._lastNotCollidingDirection = top
-                    else if (this._lastNotCollidingDirection == bottom+right || this._lastNotCollidingDirection == bottom+left) this._lastNotCollidingDirection = bottom
-                }
-                if (this._onCollisionExitCB && this._hasCollision) this._onCollisionExitCB(this._lastNotCollidingDirection, this)
-                this._hasCollision = false
+        if (collisions==all) {
+            if (this._onCollisionEnterCB && !this._hasCollision) this._onCollisionEnterCB(this._lastNotCollidingDirection, this)
+            this._hasCollision = true
+            if (this._onCollisionCB) this._onCollisionCB(this._lastNotCollidingDirection, this)
+        } else {
+            this._lastNotCollidingDirection = collisions^all
+            if (this._disableCornerDetection) {
+                if (this._lastNotCollidingDirection == top+right || this._lastNotCollidingDirection == top+left) this._lastNotCollidingDirection = top
+                else if (this._lastNotCollidingDirection == bottom+right || this._lastNotCollidingDirection == bottom+left) this._lastNotCollidingDirection = bottom
             }
+            if (this._onCollisionExitCB && this._hasCollision) this._onCollisionExitCB(this._lastNotCollidingDirection, this)
+            this._hasCollision = false
+        }
     }
 
     show(render) {
-        render.batchStroke(Render.getPositionsRect(this._positions[0], this._positions[1]), [0, 50, 200, 1])
+        const positions = this.getPositionsValue()
+        render.batchStroke(Render.getPositionsRect(positions[0], positions[1]), [0, 50, 200, 1])
     }
 
-    get positions() {return this._positions}
-    get padding() {return this._padding}
-    get onCollisionCB() {return this._onCollisionCB}
-    get onCollisionEnterCB() {return this._onCollisionEnterCB}
-    get onCollisionExitCB() {return this._onCollisionExitCB}
+    getPositionsValue(positions=this._positions) {
+        const bounds = positions instanceof _BaseObj ? positions.getBounds() : positions 
+        return this._padding ? this.#applyPadding(bounds) : bounds
+    }
 
-    set positions(positions) {this._positions = positions instanceof _BaseObj ? positions.getBounds() : CDEUtils.unlinkPositions(positions)}
-    set padding(padding) {
-        const positions = this._positions
-        this._padding = padding = typeof padding=="number" ? [padding, padding, padding, padding] : [padding[0],padding[1]??padding[0], padding[2]??padding[0], padding[3]??padding[1]]
+    #applyPadding(positions=this._positions) {
+        const padding = this._padding
+        positions = CDEUtils.unlinkPositions(positions)
         positions[0][0] -= padding[3]
         positions[0][1] -= padding[0]
         positions[1][0] += padding[1]
         positions[1][1] += padding[2]
-        return this._padding
+        return positions
     }
+
+    get name() {return this._name}
+    get positions() {return this.getPositionsValue()}
+    get positionsRaw() {return this._positions}
+    get padding() {return this._padding}
+    get onCollisionCB() {return this._onCollisionCB}
+    get onCollisionEnterCB() {return this._onCollisionEnterCB}
+    get onCollisionExitCB() {return this._onCollisionExitCB}
+    get hasDynamicPositions() {return this._positions instanceof _BaseObj}
+
+    set positions(positions) {this._positions = positions instanceof _BaseObj ? positions : CDEUtils.unlinkPositions(positions)}
+    set padding(padding) {this._padding = typeof padding=="number" ? [padding, padding, padding, padding] : [padding[0],padding[1]??padding[0], padding[2]??padding[0], padding[3]??padding[1]]}
     set onCollisionCB(onCollisionCB) {this._onCollisionCB = CDEUtils.isFunction(onCollisionCB) ? onCollisionCB : null}
     set onCollisionEnterCB(onCollisionEnterCB) {this._onCollisionEnterCB = CDEUtils.isFunction(onCollisionEnterCB) ? onCollisionEnterCB : null}
     set onCollisionExitCB(onCollisionExitCB) {this._onCollisionExitCB = CDEUtils.isFunction(onCollisionExitCB) ? onCollisionExitCB : null}
