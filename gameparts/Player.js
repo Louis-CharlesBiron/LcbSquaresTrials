@@ -1,53 +1,62 @@
 class Player {
     static KEYBINDS = {
-        MOVEMENTS: {
-            UP:[TypingDevice.KEYS.W, TypingDevice.KEYS.ARROW_UP, TypingDevice.KEYS.SPACE],
-            DOWN:[TypingDevice.KEYS.S, TypingDevice.KEYS.ARROW_DOWN],
-            RIGHT:[TypingDevice.KEYS.D, TypingDevice.KEYS.ARROW_RIGHT],
-            LEFT:[TypingDevice.KEYS.A, TypingDevice.KEYS.ARROW_LEFT],
-        }
+        UP:[TypingDevice.KEYS.W, TypingDevice.KEYS.SPACE],
+        DOWN:[TypingDevice.KEYS.S],
+        RIGHT:[TypingDevice.KEYS.D, TypingDevice.KEYS.ARROW_RIGHT],
+        LEFT:[TypingDevice.KEYS.A, TypingDevice.KEYS.ARROW_LEFT],
+        SMALLER:[TypingDevice.KEYS.ARROW_DOWN],
+        BIGGER:[TypingDevice.KEYS.ARROW_UP],
     }
     static PHYSICAL_STATES = {AIR:0, GROUND:1}
+    static MINIMAL_RADIUS = 5
+    static MAXIMAL_RADIUS = 30
 
     constructor(CVS) {
         this._obj = new Dot(CVS.getCenter(), 5, "red")
         this._speed = 150
-        this._jumpHeight = 800
+        this._radiusSpeed = 35
+        this._jumpHeight = 600
         this._jumpDuration = 850
         this._jumpAnim = null
+        this._gravity = 350
         this._nextPosX = null
         this._nextPosY = null
 
         this._collisions = []
         this._physicalState = false
-        const interactions = this._interactions = {up:null, down:null, right:null, left:null},
+        const interactions = this._interactions = Object.keys(Player.KEYBINDS).reduce((a,b)=>(a[b.toLowerCase()]=null,a),{}),
               settings = this._settings = {showHitboxes:false, noclip:false}
 
         CVS.add(this._obj)
 
         this._obj.loopCB = ()=>{
-            const speed = this._speed*CVS.deltaTime, player = this._obj
+            const deltaTime = CVS.deltaTime, speed = this._speed*deltaTime, player = this._obj
 
             // MOVEMENTS
             this._nextPosX = player.x
             this._nextPosY = player.y
-            //if (interactions.up) this._nextPosY -= speed
             if (interactions.down) this._nextPosY += speed
             if (interactions.right) this._nextPosX += speed
             if (interactions.left) this._nextPosX -= speed
 
-
             // JUMPING
             if (this._physicalState && interactions.up && !this._jumpAnim) {
                 this._jumpAnim = new Anim((prog, i, deltaTime)=>{
-                    this._nextPosY -= (1-prog)*this._jumpHeight*deltaTime
+                    this._nextPosY -= (1-prog)*this.#getAdjustedJumpHeight()*deltaTime
                 }, this._jumpDuration, Anim.easeInOutQuad, ()=>this._jumpAnim=null)
             }
-            if (this._jumpAnim) this._jumpAnim.getFrame(CVS.timeStamp, CVS.deltaTime)
+            if (this._jumpAnim) this._jumpAnim.getFrame(CVS.timeStamp, deltaTime)
 
+            // SIZE CHANGES
+            if (interactions.smaller && player.radius > Player.MINIMAL_RADIUS) {
+                this.updateRadius(player.radius-this._radiusSpeed*deltaTime)
+            }
+            if (interactions.bigger && player.radius < Player.MAXIMAL_RADIUS) {
+                this.updateRadius(player.radius+this._radiusSpeed*deltaTime)
+            }
 
             // GRAVITY
-            this._nextPosY += 350*CVS.deltaTime
+            this._nextPosY += this._gravity*deltaTime
 
             // COLLISIONS
             const collisions = this.collisions, c_ll = collisions.length
@@ -63,20 +72,22 @@ class Player {
         }
     }
 
-    keyDown(keyboard, e) {
-        const keys = Player.KEYBINDS.MOVEMENTS
-        this._interactions.up = keyboard.isDown(keys.UP)
-        this._interactions.down = keyboard.isDown(keys.DOWN)
-        this._interactions.right = keyboard.isDown(keys.RIGHT)
-        this._interactions.left = keyboard.isDown(keys.LEFT)
+    #getAdjustedJumpHeight() {
+        function normalize(x, a, b) {
+            return (x - a) / (b - a);
+          }
+        //console.log(this._gravity+(this._jumpHeight-this._jumpHeight*CDEUtils.mod(1, normalize(this._obj.radius, Player.MINIMAL_RADIUS, Player.MAXIMAL_RADIUS), 0.8)), CDEUtils.mod(1, normalize(this._obj.radius, Player.MINIMAL_RADIUS, Player.MAXIMAL_RADIUS), 0.9))
+        return this._gravity+(this._jumpHeight*CDEUtils.mod(1, normalize(this._obj.radius, Player.MINIMAL_RADIUS, Player.MAXIMAL_RADIUS), 0.8))
     }
 
-    keyUp(keyboard, e) {
-        const keys = Player.KEYBINDS.MOVEMENTS
+    keyEvent(keyboard) {
+        const keys = Player.KEYBINDS
         this._interactions.up = keyboard.isDown(keys.UP)
         this._interactions.down = keyboard.isDown(keys.DOWN)
         this._interactions.right = keyboard.isDown(keys.RIGHT)
         this._interactions.left = keyboard.isDown(keys.LEFT)
+        this._interactions.smaller = keyboard.isDown(keys.SMALLER)
+        this._interactions.bigger = keyboard.isDown(keys.BIGGER)
     }
 
     addDefaultCollision(positions, name, padding=this._obj.radius-2) {

@@ -38,10 +38,10 @@ CVS.setMouseLeave(mMove)
 CVS.setMouseDown(()=>player.obj.pos = CVS.mouse.pos)
 CVS.setMouseUp()
 CVS.setKeyDown((keyboard, e)=>{
-    player.keyDown(keyboard, e)
+    player.keyEvent(keyboard)
 }, true)
 CVS.setKeyUp((keyboard, e)=>{
-    player.keyUp(keyboard, e)
+    player.keyEvent(keyboard)
 }, true)
 
 // START
