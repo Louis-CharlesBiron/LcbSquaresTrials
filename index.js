@@ -9,6 +9,16 @@ const player = new Player(CVS),
 
 
 
+      function linesIntersect(pos1, pos2, linePos1, linePos2) {// TODO
+        function ccw(pA, pB, pC) {
+          return (pC[1] - pA[1]) * (pB[0] - pA[0]) > (pB[1] - pA[1]) * (pC[0] - pA[0]);
+        }
+        return ccw(pos1, linePos1, linePos2) !== ccw(pos2, linePos1, linePos2) &&
+               ccw(pos1, pos2, linePos1) !== ccw(pos1, pos2, linePos2);
+      }
+
+
+
 player.updateRadius(8)
 player.addDefaultSquareCollision(squares[4])
 

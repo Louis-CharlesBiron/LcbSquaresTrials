@@ -25,7 +25,7 @@ class Player {
         this._collisions = []
         this._physicalState = false
         const interactions = this._interactions = Object.keys(Player.KEYBINDS).reduce((a,b)=>(a[b.toLowerCase()]=null,a),{}),
-              settings = this._settings = {showHitboxes:false, noclip:false}
+              settings = this._settings = {showHitboxes:true, noclip:false}
 
         CVS.add(this._obj)
 
@@ -62,7 +62,7 @@ class Player {
             const collisions = this.collisions, c_ll = collisions.length
             for (let i=0;i<c_ll;i++) {
                 const collision = collisions[i]
-                if (!settings.noclip) collision.detect([this._nextPosX, this._nextPosY])
+                if (!settings.noclip) collision.detect([this._nextPosX, this._nextPosY], player.pos)
                 if (settings.showHitboxes) collision.show(CVS.render)
             }
 
@@ -73,7 +73,7 @@ class Player {
     }
 
     #getAdjustedJumpHeight() {
-        function normalize(x, a, b) {
+        function normalize(x, a, b) {// todo
             return (x - a) / (b - a);
           }
         //console.log(this._gravity+(this._jumpHeight-this._jumpHeight*CDEUtils.mod(1, normalize(this._obj.radius, Player.MINIMAL_RADIUS, Player.MAXIMAL_RADIUS), 0.8)), CDEUtils.mod(1, normalize(this._obj.radius, Player.MINIMAL_RADIUS, Player.MAXIMAL_RADIUS), 0.9))
@@ -92,21 +92,22 @@ class Player {
 
     addDefaultCollision(positions, name, padding=this._obj.radius-2) {
         const collision = new Collision(name, positions, padding,
-            (dir, col)=>{
+            (dir, col, safeCol)=>{
+                //console.log(dir, safeCol)
                 const positions = col.getPositionsValue(), pos1 = positions[0], pos2 = positions[1]
-                if (dir == Collision.DIRECTIONS.RIGHT && this._nextPosX < pos2[0]) this._nextPosX = pos2[0]
-                else if (dir == Collision.DIRECTIONS.LEFT && this._nextPosX > pos1[0]) this._nextPosX = pos1[0]
-                if (dir == Collision.DIRECTIONS.TOP && this._nextPosY > pos1[1]) this._nextPosY = pos1[1]
-                else if (dir == Collision.DIRECTIONS.BOTTOM && this._nextPosY < pos2[1]) this._nextPosY = pos2[1]
+                if (dir == Collision.DIRS.RIGHT && this._nextPosX < pos2[0]) this._nextPosX = pos2[0]+1
+                else if (dir == Collision.DIRS.LEFT && this._nextPosX > pos1[0]) this._nextPosX = pos1[0]-1
+                if (dir == Collision.DIRS.TOP && this._nextPosY > pos1[1]) this._nextPosY = pos1[1]-1
+                else if (dir == Collision.DIRS.BOTTOM && this._nextPosY < pos2[1]) this._nextPosY = pos2[1]+1
             },
-            (dir)=>{
+            (dir, col, safeCol)=>{
                 //console.log("ENTER", dir)
-                if (dir==Collision.DIRECTIONS.TOP) {// GROUND
+                if (dir==Collision.DIRS.TOP) {// GROUND
                     this._physicalState = Player.PHYSICAL_STATES.GROUND
                 }
             },
-            (dir)=>{
-                if (dir==Collision.DIRECTIONS.TOP) this._physicalState = Player.PHYSICAL_STATES.AIR
+            (dir, col, safeCol)=>{
+                if (dir==Collision.DIRS.TOP) this._physicalState = Player.PHYSICAL_STATES.AIR
                 //console.log("LEAVE", dir)
             })
         this._collisions.push(collision)
@@ -121,7 +122,7 @@ class Player {
     }
 
     updateRadius(newRadius) {
-        this._obj.radius = newRadius
+        this._obj.radius = newRadius=CDEUtils.clamp(newRadius, Player.MINIMAL_RADIUS, Player.MAXIMAL_RADIUS)
         const collisions = this.collisions, c_ll = collisions.length
         for (let i=0;i<c_ll;i++) {
             const collision = collisions[i]

@@ -1,7 +1,7 @@
 class Collision {
     static #ID_GIVER = 0
     static DEFAULT_COLLISION_NAME = "block"
-    static DIRECTIONS = {TOP:1<<0, RIGHT:1<<1, BOTTOM:1<<2, LEFT:1<<3, TOP_LEFT:(1<<0)+(1<<3), TOP_RIGHT:(1<<0)+(1<<1), BOTTOM_LEFT:(1<<2)+(1<<3), BOTTOM_RIGHT:(1<<2)+(1<<3), ALL:(1<<4)-1}
+    static DIRS = {TOP:1<<0, RIGHT:1<<1, BOTTOM:1<<2, LEFT:1<<3, TOP_LEFT:(1<<0)+(1<<3), TOP_RIGHT:(1<<0)+(1<<1), BOTTOM_LEFT:(1<<2)+(1<<3), BOTTOM_RIGHT:(1<<2)+(1<<3), ALL:(1<<4)-1}
 
     
     /**
@@ -12,9 +12,9 @@ class Collision {
      * @param {Function?} onCollisionCB: Function called each frame the pos is inside the area. (collisionDirection)=>{...}
      * @param {Function?} onCollisionEnterCB: Function called once each time a collision is detected. (collisionDirection)=>{...}
      * @param {Function?} onCollisionExitCB: Function called once each time a collision is ended. (collisionDirection)=>{...}
-     * @param {boolean?} disableCornerDetection: If true, prevents 'collisionDirection' in collision callbacks to contain more than more direction when colliding with corners
+     * @param {boolean?} enableCornerDetection: If true, prevents 'collisionDirection' in collision callbacks to contain more than more direction when colliding with corners
      */
-    constructor(name, positions, padding, onCollisionCB, onCollisionEnterCB, onCollisionExitCB, disableCornerDetection) {
+    constructor(name, positions, padding, onCollisionCB, onCollisionEnterCB, onCollisionExitCB, enableCornerDetection) {
         this._id = Collision.#ID_GIVER++
         this._name = name??Collision.DEFAULT_COLLISION_NAME
         this.positions = positions
@@ -22,27 +22,70 @@ class Collision {
         this.onCollisionCB = onCollisionCB
         this.onCollisionEnterCB = onCollisionEnterCB
         this.onCollisionExitCB = onCollisionExitCB
-        this._disableCornerDetection = disableCornerDetection??true
+        this._enableCornerDetection = enableCornerDetection??false
 
         this._hasCollision = false
-        this._lastNotCollidingDirection = null
+        this._lastDir = null
     }
 
     detect(pos, lastPos) {
-        const top = Collision.DIRECTIONS.TOP, right = Collision.DIRECTIONS.RIGHT, bottom = Collision.DIRECTIONS.BOTTOM, left = Collision.DIRECTIONS.LEFT, all = Collision.DIRECTIONS.ALL,
-        x = pos[0], y = pos[1], positions = this.getPositionsValue(), collisions = ((y>=positions[0][1])&&top)+((x<=positions[1][0])&&right)+((y<=positions[1][1])&&bottom)+((x>=positions[0][0])&&left)
+        const top = Collision.DIRS.TOP, right = Collision.DIRS.RIGHT, bottom = Collision.DIRS.BOTTOM, left = Collision.DIRS.LEFT, all = Collision.DIRS.ALL,
+        x = pos[0], y = pos[1], positions = this.getPositionsValue(), 
+        topLeftPos = positions[0], bottomRightPos = positions[1], topRightPos = [bottomRightPos[0], topLeftPos[1]], bottomLeftPos = [topLeftPos[0], bottomRightPos[1]],
+        topY = positions[0][1], rightX = positions[1][0], bottomY = positions[1][1], leftX = positions[0][0]
 
-        if (collisions==all) {
-            if (this._onCollisionEnterCB && !this._hasCollision) this._onCollisionEnterCB(this._lastNotCollidingDirection, this)
+
+        const iT = linesIntersect(pos, lastPos, topLeftPos, topRightPos),
+              iR = linesIntersect(pos, lastPos, bottomRightPos, topRightPos),
+              iB = linesIntersect(pos, lastPos, bottomRightPos, bottomLeftPos),
+              iL = linesIntersect(pos, lastPos, topLeftPos, bottomLeftPos)
+
+        const inside = y>=topY && x<=rightX && y<=bottomY && x>=leftX
+
+        const safeCollisions = 
+        (iT?"top":"")+
+        (iR?"right":"")+
+        (iB?"bottom":"")+
+        (iL?"left":"")
+
+
+        const collisions = 
+        (iT&&top)+
+        (iR&&right)+
+        (iB&&bottom)+
+        (iL&&left)
+
+
+        let dir = collisions
+        if (!collisions && inside) {
+            dir = this._lastDir
+            console.log("FIXED, new is:", this._lastDir)
+        }
+        if (collisions&Collision.DIRS.TOP && collisions&Collision.DIRS.BOTTOM) dir = y > topY ? Collision.DIRS.TOP : Collision.DIRS.BOTTOM
+        if (collisions&Collision.DIRS.LEFT && collisions&Collision.DIRS.RIGHT) dir = x > leftX ? Collision.DIRS.LEFT : Collision.DIRS.RIGHT
+        if (!this._enableCornerDetection) {
+            if (dir == top+right || dir == top+left) dir = top
+            else if (dir == bottom+right || dir == bottom+left) dir = bottom
+        }
+
+        //if (this._name=="block") console.log(inside, this._name)
+        
+                    if (this._id==2) {
+                        //console.log( pos, lastPos, bottomRightPos, bottomLeftPos)
+                    }
+
+        CVS.render.fill(Render.getArc(pos, 3), [255,255,0,1])
+        CVS.render.fill(Render.getArc(lastPos, 3), [0,200,0,1])
+        CVS.render.stroke(Render.getLine(pos, lastPos), [0,255,0,1])
+        CVS.render.stroke(Render.getLine(bottomRightPos, [leftX, bottomY]), [255,255,0,1])
+
+        if (dir) {
+            if (this._onCollisionEnterCB && !this._hasCollision) this._onCollisionEnterCB(dir, this, safeCollisions)
             this._hasCollision = true
-            if (this._onCollisionCB) this._onCollisionCB(this._lastNotCollidingDirection, this)
+            if (this._onCollisionCB) this._onCollisionCB(dir, this, safeCollisions)
+            this._lastDir = dir
         } else {
-            this._lastNotCollidingDirection = collisions^all
-            if (this._disableCornerDetection) {
-                if (this._lastNotCollidingDirection == top+right || this._lastNotCollidingDirection == top+left) this._lastNotCollidingDirection = top
-                else if (this._lastNotCollidingDirection == bottom+right || this._lastNotCollidingDirection == bottom+left) this._lastNotCollidingDirection = bottom
-            }
-            if (this._onCollisionExitCB && this._hasCollision) this._onCollisionExitCB(this._lastNotCollidingDirection, this)
+            if (this._onCollisionExitCB && this._hasCollision) this._onCollisionExitCB(this._lastDir, this, safeCollisions)
             this._hasCollision = false
         }
     }
