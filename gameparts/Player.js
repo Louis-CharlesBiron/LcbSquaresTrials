@@ -35,17 +35,18 @@ class Player {
             // MOVEMENTS
             this._nextPosX = player.x
             this._nextPosY = player.y
+            if (interactions.up) this._nextPosY -= speed
             if (interactions.down) this._nextPosY += speed
             if (interactions.right) this._nextPosX += speed
             if (interactions.left) this._nextPosX -= speed
 
             // JUMPING
-            if (this._physicalState && interactions.up && !this._jumpAnim) {
-                this._jumpAnim = new Anim((prog, i, deltaTime)=>{
-                    this._nextPosY -= (1-prog)*this.#getAdjustedJumpHeight()*deltaTime
-                }, this._jumpDuration, Anim.easeInOutQuad, ()=>this._jumpAnim=null)
-            }
-            if (this._jumpAnim) this._jumpAnim.getFrame(CVS.timeStamp, deltaTime)
+            //if (this._physicalState && interactions.up && !this._jumpAnim) {
+            //    this._jumpAnim = new Anim((prog, i, deltaTime)=>{
+            //        this._nextPosY -= (1-prog)*this.#getAdjustedJumpHeight()*deltaTime
+            //    }, this._jumpDuration, Anim.easeInOutQuad, ()=>this._jumpAnim=null)
+            //}
+            //if (this._jumpAnim) this._jumpAnim.getFrame(CVS.timeStamp, deltaTime)
 
             // SIZE CHANGES
             if (interactions.smaller && player.radius > Player.MINIMAL_RADIUS) {
@@ -56,7 +57,7 @@ class Player {
             }
 
             // GRAVITY
-            this._nextPosY += this._gravity*deltaTime
+            //this._nextPosY += this._gravity*deltaTime
 
             // COLLISIONS
             const collisions = this.collisions, c_ll = collisions.length
@@ -95,10 +96,11 @@ class Player {
             (dir, col, safeCol)=>{
                 //console.log(dir, safeCol)
                 const positions = col.getPositionsValue(), pos1 = positions[0], pos2 = positions[1]
-                if (dir == Collision.DIRS.RIGHT && this._nextPosX < pos2[0]) this._nextPosX = pos2[0]+1
-                else if (dir == Collision.DIRS.LEFT && this._nextPosX > pos1[0]) this._nextPosX = pos1[0]-1
-                if (dir == Collision.DIRS.TOP && this._nextPosY > pos1[1]) this._nextPosY = pos1[1]-1
-                else if (dir == Collision.DIRS.BOTTOM && this._nextPosY < pos2[1]) this._nextPosY = pos2[1]+1
+                if (dir == Collision.DIRS.RIGHT || dir == Collision.DIRS.LEFT) console.log(dir == Collision.DIRS.RIGHT, dir == Collision.DIRS.LEFT)
+                if (dir == Collision.DIRS.RIGHT && this._nextPosX <= pos2[0]) this._nextPosX = pos2[0]+1
+                else if (dir == Collision.DIRS.LEFT && this._nextPosX >= pos1[0]) this._nextPosX = pos1[0]-1
+                if (dir == Collision.DIRS.TOP && this._nextPosY >= pos1[1]) this._nextPosY = pos1[1]-1
+                else if (dir == Collision.DIRS.BOTTOM && this._nextPosY <= pos2[1]) this._nextPosY = pos2[1]+1
             },
             (dir, col, safeCol)=>{
                 //console.log("ENTER", dir)
