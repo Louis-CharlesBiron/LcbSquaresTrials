@@ -29,55 +29,34 @@ class Collision {
     }
 
     detect(pos, lastPos) {
-        const top = Collision.DIRS.TOP, right = Collision.DIRS.RIGHT, bottom = Collision.DIRS.BOTTOM, left = Collision.DIRS.LEFT, all = Collision.DIRS.ALL,
-        x = pos[0], y = pos[1], positions = this.getPositionsValue(), 
+        const top = Collision.DIRS.TOP, right = Collision.DIRS.RIGHT, bottom = Collision.DIRS.BOTTOM, left = Collision.DIRS.LEFT, x = pos[0], y = pos[1], positions = this.getPositionsValue(), 
         topLeftPos = positions[0], bottomRightPos = positions[1], topRightPos = [bottomRightPos[0], topLeftPos[1]], bottomLeftPos = [topLeftPos[0], bottomRightPos[1]],
-        topY = positions[0][1], rightX = positions[1][0], bottomY = positions[1][1], leftX = positions[0][0]
+        topY = positions[0][1], leftX = positions[0][0]
 
 
-        const iT = linesIntersect(pos, lastPos, topLeftPos, topRightPos),
-              iR = linesIntersect(pos, lastPos, bottomRightPos, topRightPos),
-              iB = linesIntersect(pos, lastPos, bottomRightPos, bottomLeftPos),
-              iL = linesIntersect(pos, lastPos, topLeftPos, bottomLeftPos)
+        const iT = CDEUtils.hasLinearIntersection(pos, lastPos, topLeftPos, topRightPos),
+              iR = CDEUtils.hasLinearIntersection(pos, lastPos, bottomRightPos, topRightPos),
+              iB = CDEUtils.hasLinearIntersection(pos, lastPos, bottomRightPos, bottomLeftPos),
+              iL = CDEUtils.hasLinearIntersection(pos, lastPos, topLeftPos, bottomLeftPos)
 
-        const inside = y>=topY && x<=rightX && y<=bottomY && x>=leftX
+        const inside = y>=topY && x<=positions[1][0] && y<=positions[1][1] && x>=leftX, collisions = (iT&&top)+(iR&&right)+(iB&&bottom)+(iL&&left)
 
-        const safeCollisions = 
-        (iT?"top":"")+
-        (iR?"right":"")+
-        (iB?"bottom":"")+
-        (iL?"left":"")
+        const safeCollisions = (iT?"top":"")+(iR?"right":"")+(iB?"bottom":"")+(iL?"left":"")
 
 
-        const collisions = 
-        (iT&&top)+
-        (iR&&right)+
-        (iB&&bottom)+
-        (iL&&left)
 
 
         let dir = collisions
         if (!collisions && inside) {
             dir = this._lastDir
-            console.log("FIXED, new is:", this._lastDir)
+            //console.log("FIXED, new is:", this._lastDir)
         }
-        if (collisions&Collision.DIRS.TOP && collisions&Collision.DIRS.BOTTOM) dir = y > topY ? Collision.DIRS.TOP : Collision.DIRS.BOTTOM
-        if (collisions&Collision.DIRS.LEFT && collisions&Collision.DIRS.RIGHT) dir = x > leftX ? Collision.DIRS.LEFT : Collision.DIRS.RIGHT
+        if (collisions&top && collisions&bottom) dir = y>topY ? top : bottom
+        if (collisions&left && collisions&right) dir = x>leftX ? left : right
         if (!this._enableCornerDetection) {
             if (dir == top+right || dir == top+left) dir = top
             else if (dir == bottom+right || dir == bottom+left) dir = bottom
         }
-
-        //if (this._name=="block") console.log(inside, this._name)
-        
-                    if (this._id==2) {
-                        //console.log( pos, lastPos, bottomRightPos, bottomLeftPos)
-                    }
-
-        CVS.render.fill(Render.getArc(pos, 3), [255,255,0,1])
-        CVS.render.fill(Render.getArc(lastPos, 3), [0,200,0,1])
-        CVS.render.stroke(Render.getLine(pos, lastPos), [0,255,0,1])
-        CVS.render.stroke(Render.getLine(bottomRightPos, [leftX, bottomY]), [255,255,0,1])
 
         if (dir) {
             if (this._onCollisionEnterCB && !this._hasCollision) this._onCollisionEnterCB(dir, this, safeCollisions)
