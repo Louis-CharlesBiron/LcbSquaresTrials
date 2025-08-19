@@ -1,7 +1,7 @@
 class Player {
     static KEYBINDS = {
-        UP:[TypingDevice.KEYS.W, TypingDevice.KEYS.SPACE],
-        DOWN:[TypingDevice.KEYS.S],
+        UP:[TypingDevice.KEYS.W, TypingDevice.KEYS.SPACE, TypingDevice.KEYS.ARROW_UP],
+        DOWN:[TypingDevice.KEYS.S, TypingDevice.KEYS.ARROW_DOWN],
         RIGHT:[TypingDevice.KEYS.D, TypingDevice.KEYS.ARROW_RIGHT],
         LEFT:[TypingDevice.KEYS.A, TypingDevice.KEYS.ARROW_LEFT],
         SMALLER:[TypingDevice.KEYS.ARROW_DOWN],
@@ -14,7 +14,7 @@ class Player {
     static MAXIMAL_RADIUS = 30
     static DEFAULT_RADIUS = 8
     static JUMP_CEILING_CANCELLATION_SPEED = 90
-    static DEFAULT_SPEED = 150
+    static DEFAULT_SPEED = 200
     static DEFAULT_RADIUS_SCALING_SPEED = 35
     static DEFAULT_JUMP_HEIGHT = 600
     static DEFAULT_JUMP_DURATION = 850
@@ -48,7 +48,7 @@ class Player {
             this._nextPosX = player.x
             this._nextPosY = player.y
             //if (interactions.up) this._nextPosY -= speed
-            if (interactions.down) this._nextPosY += speed
+            if (interactions.down) this._nextPosY += speed*1.25
             if (interactions.right) this._nextPosX += speed
             if (interactions.left) this._nextPosX -= speed
 
@@ -144,8 +144,6 @@ class Player {
     addDefaultCollision(positions, name, padding=this._obj.radius-2) {
         const collision = new Collision(name, positions, padding,
             (dir, col, safeCol)=>{
-                //console.log(dir, safeCol)
-                
                 // COLLISIONS
                 const positions = col.getPositionsValue(), pos1 = positions[0], pos2 = positions[1]
                 if (dir == Collision.DIRS.RIGHT && this._nextPosX <= pos2[0]) this._nextPosX = pos2[0]+1
@@ -153,37 +151,19 @@ class Player {
                 if (dir == Collision.DIRS.TOP && this._nextPosY >= pos1[1]) this._nextPosY = pos1[1]-1
                 else if (dir == Collision.DIRS.BOTTOM && this._nextPosY <= pos2[1]) this._nextPosY = pos2[1]+1
 
-                // JUMP CANCEL
+                // CANCEL JUMP WHEN HIT CEILING
                 if (dir==Collision.DIRS.BOTTOM && this._jumpAnim) this._jumpAnim.startTime -= Player.JUMP_CEILING_CANCELLATION_SPEED
-
             },
             (dir, col)=>{
-                //console.log("ENTER", dir)
-
                 // TOUCHES GROUND
                 if (dir==Collision.DIRS.TOP) this.#enterGround(col)
             },
             (dir, col)=>{
-                //console.log("LEAVE", dir)
-
                 // LEAVES GROUND
                 if (dir==Collision.DIRS.TOP) this.#leaveGround(col)
             })
         this._collisions.push(collision)
-    }
-
-    /**
-     * Resets the collisions bounds for the provided square
-     * @param {FilledShape} square One of the 9 squares 
-     */
-    refreshSquareCollisions(square) {
-        const bounds = square.getBounds()
-        this._collisions.filter(col=>col.name.endsWith("$"+square.id)).forEach(col=>{
-            if (col.name.startsWith("squareTop")) col.positions = [bounds[0], [bounds[1][0], bounds[0][1]]]
-            if (col.name.startsWith("squareRight")) col.positions = [[bounds[1][0], bounds[0][1]], bounds[1]]
-            if (col.name.startsWith("squareBottom")) col.positions = [[bounds[0][0], bounds[1][1]], bounds[1]]
-            if (col.name.startsWith("squareLeft")) col.positions = [bounds[0], [bounds[0][0], bounds[1][1]]]
-        })
+        return collision
     }
 
     /**
@@ -192,10 +172,12 @@ class Player {
      */
     addDefaultSquareCollision(square) {
         const bounds = square.getBounds(), squarePadding = this._obj.radius
-        this.addDefaultCollision([bounds[0], [bounds[1][0], bounds[0][1]]], "squareTop$"+square.id   , squarePadding) //TOP
-        this.addDefaultCollision([[bounds[1][0], bounds[0][1]], bounds[1]], "squareRight$"+square.id , squarePadding) //RIGHT
-        this.addDefaultCollision([[bounds[0][0], bounds[1][1]], bounds[1]], "squareBottom$"+square.id, squarePadding) //BOTTOM
-        this.addDefaultCollision([bounds[0], [bounds[0][0], bounds[1][1]]], "squareLeft$"+square.id  , squarePadding) //LEFT
+        return [
+            this.addDefaultCollision([bounds[0], [bounds[1][0], bounds[0][1]]], "squareTop$"+square.id   , squarePadding), //TOP
+            this.addDefaultCollision([[bounds[1][0], bounds[0][1]], bounds[1]], "squareRight$"+square.id , squarePadding), //RIGHT
+            this.addDefaultCollision([[bounds[0][0], bounds[1][1]], bounds[1]], "squareBottom$"+square.id, squarePadding), //BOTTOM
+            this.addDefaultCollision([bounds[0], [bounds[0][0], bounds[1][1]]], "squareLeft$"+square.id  , squarePadding) //LEFT
+        ]
     }
 
     /**
@@ -219,6 +201,7 @@ class Player {
     get isOnGround() {return this._physicalState==Player.PHYSICAL_STATES.GROUND}
     get physicalState() {return this._physicalState}
 
+	set pos(pos) {this._obj.pos = pos}
 	set obj(_obj) {this._obj = _obj}
 	set speed(_speed) {this._speed = _speed}
 	set collisions(_collisions) {this._collisions = _collisions}

@@ -7,16 +7,7 @@ const fpsCounter = new FPSCounter(), CVS = Canvas.create(null, ()=>{//looping
 const gameManager = new GameManager(CVS)
 
 
-
-
-
-const testCol = new FilledShape("grey", true, CDEUtils.addPos(CVS.getCenter(), [-50]), [new Dot([-30, -30]),new Dot([30, -30]),new Dot([30, 30]),new Dot([-30, 30]),], 0)
-CVS.add(testCol)
-gameManager.player.addDefaultCollision(testCol)
-
-const testCol2 = new FilledShape("grey", true, CDEUtils.addPos(CVS.getCenter(), [50, 50]), [new Dot([-30, -30]),new Dot([30, -30]),new Dot([30, 30]),new Dot([-30, 30]),], 0)
-CVS.add(testCol2)
-gameManager.player.addDefaultCollision(testCol2)
+gameManager.TEMP_ADD_SOME_TEST_COLLISIONS_IN_SQUARE_4()
 
 
 // USER ACTIONS
