@@ -23,7 +23,7 @@ class Player {
     static MAX_JUMP_COUNT = 2
 
     constructor(CVS, spawnPos) {
-        this._obj = new Dot(spawnPos, Player.DEFAULT_RADIUS, "red")
+        this._obj = new Dot(spawnPos, Player.DEFAULT_RADIUS, "red", null, null, true)
         this._speed = Player.DEFAULT_SPEED
         this._radiusSpeed = Player.DEFAULT_RADIUS_SCALING_SPEED
         this._jumpHeight = Player.DEFAULT_JUMP_HEIGHT
@@ -92,6 +92,15 @@ class Player {
             // MOVE
             player.x = this._nextPosX
             player.y = this._nextPosY
+
+            // MOVE CAMERA
+            const camMargin = GameManager.CAMERA_MARGIN, camSpeed = GameManager.CAMERA_MOVING_SPEED*deltaTime, viewPos = CVS.viewPos
+            
+            if (player.x < camMargin-viewPos[0]) CVS.moveViewBy([camSpeed])
+            else if (player.x+viewPos[0] > (CVS.width-camMargin)) CVS.moveViewBy([-camSpeed])
+            if (player.y < camMargin-viewPos[1]) CVS.moveViewBy([0, camSpeed])
+            else if (player.y+viewPos[1] > CVS.height-camMargin) CVS.moveViewBy([0, -camSpeed])
+
         }
         CVS.add(this._obj)
     }
@@ -108,6 +117,8 @@ class Player {
      */
     keyEvent(keyboard) {
         const keys = Player.KEYBINDS
+
+        // HOLDABLES
         this._interactions.up = keyboard.isDown(keys.UP)
         this._interactions.down = keyboard.isDown(keys.DOWN)
         this._interactions.right = keyboard.isDown(keys.RIGHT)
@@ -119,7 +130,7 @@ class Player {
         if (keyboard.isDown(keys.SHOW_HITBOXES)) this._settings.showHitboxes = !this._settings.showHitboxes
         if (keyboard.isDown(keys.SHOW_TRAJECTORY)) this._settings.showTrajectory = !this._settings.showTrajectory
 
-        // OTHERS
+        // JUMP LOCK
         if (!this._interactions.up && this._jumpHoldLock) this._jumpHoldLock = false
     }
 
@@ -131,6 +142,9 @@ class Player {
         this._jumpCount = Player.MAX_JUMP_COUNT
     }
 
+    /**
+     * Called upon leaving any ground
+     */
     #leaveGround(collision) {
         this._physicalState = Player.PHYSICAL_STATES.AIR
     }

@@ -16,3 +16,11 @@ html, body {
     top: 0;
     left: 0;
 }
+
+canvas {
+    display: block;
+}
+
+.smooth {
+    transition: 1s all;
+}

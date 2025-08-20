@@ -4,11 +4,11 @@ class Obstacle {
     static DEFAULT_HEIGHT = 50
     static DEFAULT_NAME = "block"
 
-    constructor(gameManager, pos, width, height, name, color) {
+    constructor(pos, width, height, name, color) {
         this._obj = this.#createObj(pos, width, height, color)
-        CVS.add(this._obj)
+        GameManager.instance.CVS.add(this._obj)
         this._name = name??Obstacle.DEFAULT_NAME
-        this._collision = gameManager.player.addDefaultCollision(this._obj)
+        this._collision = GameManager.instance.player.addDefaultCollision(this._obj)
     }
 
     #createObj(pos, width, height, color) {

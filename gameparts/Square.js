@@ -1,18 +1,18 @@
 class Square {
-    static DEFAULT_SQUARE_MARGIN = 5
     static DEFAULT_BACKGROUND_COLOR = [42, 36, 45, 1]
     static DEFAULT_BORDER_COLOR = [62, 66, 75, 1]
-    static GET_DEFAULT_SQUARE_SIZE = CVS=>CVS.height/6-Square.DEFAULT_SQUARE_MARGIN
+    static DEFAULT_SQUARE_SIZE = 300
+    static DEFAULT_SQUARE_MARGIN = 100
 
-    constructor(gameManager, pos, size, bgColor, borderColor) {
-        this._obj = this.#createSquare(gameManager.CVS, pos, size, bgColor, borderColor)
-        gameManager.CVS.add(this._obj)        
+    constructor(pos, size, bgColor, borderColor) {
+        this._obj = this.#createSquare(GameManager.instance.CVS, pos, size, bgColor, borderColor)
+        GameManager.instance.CVS.add(this._obj)        
         this._obstacles = []
-        this._collisions = gameManager.player.addDefaultSquareCollision(this._obj)
+        this._collisions = GameManager.instance.player.addDefaultSquareCollision(this._obj)
     }
 
     #createSquare(CVS, pos, size, backgroundColor, borderColor) {
-        size??=Square.GET_DEFAULT_SQUARE_SIZE(CVS)
+        size??=Square.DEFAULT_SQUARE_SIZE
         backgroundColor??=Square.DEFAULT_BACKGROUND_COLOR
         borderColor??=Square.DEFAULT_BORDER_COLOR
 
