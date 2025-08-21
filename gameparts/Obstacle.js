@@ -12,13 +12,19 @@ class Obstacle {
     }
 
     #createObj(pos, width, height, color) {
+        const isFromCenter = pos?.isFromCenter
+        pos = pos?.pos||pos
         color??=Obstacle.DEFAULT_COLOR
         width??=Obstacle.DEFAULT_WIDTH
         height??=Obstacle.DEFAULT_HEIGHT
+        if (isFromCenter) {
+            const w2 = width/2, h2 = height/2
+            return new FilledShape(color, true, pos, [new Dot([-w2, -h2]),new Dot([w2, -h2]),new Dot([w2, h2]),new Dot([-w2, h2])], 0)
+        } else return new FilledShape(color, true, pos, [new Dot(),new Dot([width, 0]),new Dot([width, height]),new Dot([0, height])], 0)
+    }
 
-
-        const w2 = width/2, h2 = height/2
-        return new FilledShape(color, true, pos, [new Dot([-w2, -h2]),new Dot([w2, -h2]),new Dot([w2, h2]),new Dot([-w2, h2])], 0)
+    static createFromCenter(pos, width, height, color) {
+        return new Obstacle({isFromCenter:true, pos}, width, height, color)
     }
 
     scaleAt(scale) {

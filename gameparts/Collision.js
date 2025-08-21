@@ -1,7 +1,10 @@
 class Collision {
     static #ID_GIVER = 0
     static DEFAULT_COLLISION_NAME = "block"
+    static DEFAULT_HITBOX_COLOR = [0, 50, 200, 1]
+    static DEFAULT_INTERACTION_HITBOX_COLOR = [200, 200, 100, 1]
     static DIRS = {TOP:1<<0, RIGHT:1<<1, BOTTOM:1<<2, LEFT:1<<3, TOP_LEFT:(1<<0)+(1<<3), TOP_RIGHT:(1<<0)+(1<<1), BOTTOM_LEFT:(1<<2)+(1<<3), BOTTOM_RIGHT:(1<<2)+(1<<3), ALL:(1<<4)-1}
+    static DEFAULT_TYPES = {AREA_ENTER:0, END:1}
 
     /**
      * Creates a collision area that detects when a pos intersects
@@ -13,7 +16,7 @@ class Collision {
      * @param {Function?} onCollisionExitCB: Function called once each time a collision is ended. (collisionDirection)=>{...}
      * @param {boolean?} enableCornerDetection: If true, prevents 'collisionDirection' in collision callbacks to contain more than more direction when colliding with corners
      */
-    constructor(name, positions, padding, onCollisionCB, onCollisionEnterCB, onCollisionExitCB, enableCornerDetection) {
+    constructor(name, positions, padding, onCollisionCB, onCollisionEnterCB, onCollisionExitCB, enableCornerDetection, hitboxColor) {
         this._id = Collision.#ID_GIVER++
         this._name = name??Collision.DEFAULT_COLLISION_NAME
         this.positions = positions
@@ -22,6 +25,7 @@ class Collision {
         this.onCollisionEnterCB = onCollisionEnterCB
         this.onCollisionExitCB = onCollisionExitCB
         this._enableCornerDetection = enableCornerDetection??false
+        this._hitboxColor = hitboxColor||Collision.DEFAULT_HITBOX_COLOR
 
         this._hasCollision = false
         this._lastDir = null
@@ -68,7 +72,7 @@ class Collision {
      */
     show(render) {
         const positions = this.getPositionsValue()
-        render.batchStroke(Render.getPositionsRect(positions[0], positions[1]), [0, 50, 200, 1])
+        render.batchStroke(Render.getPositionsRect(positions[0], positions[1]), this._hitboxColor)
     }
 
     /**
@@ -90,6 +94,11 @@ class Collision {
         positions[1][1] += padding[2]
         return positions
     }
+
+    static createAreaEnter(positions, onCollisionEnterCB, onCollisionCB, onCollisionExitCB, padding, hitboxColor) {
+        return new Collision("areaEnter", positions, padding, onCollisionCB, onCollisionEnterCB, onCollisionExitCB, false, hitboxColor||Collision.DEFAULT_INTERACTION_HITBOX_COLOR)
+    }
+
 
     get name() {return this._name}
     get positions() {return this.getPositionsValue()}

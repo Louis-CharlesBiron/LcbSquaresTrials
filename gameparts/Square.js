@@ -7,7 +7,7 @@ class Square {
     constructor(pos, size, bgColor, borderColor) {
         this._obj = this.#createSquare(GameManager.instance.CVS, pos, size, bgColor, borderColor)
         GameManager.instance.CVS.add(this._obj)        
-        this._obstacles = []
+        this._objects = []
         this._collisions = GameManager.instance.player.addDefaultSquareCollision(this._obj)
     }
 
@@ -65,9 +65,9 @@ class Square {
         }, time, easing))
     }
 
-    addObstacle(obstacle) {
-        this._obstacles.push(obstacle)
-        return obstacle
+    addObject(obj) {
+        this._objects.push(obj)
+        return obj
     }
 
     get id() {return this._obj.id}

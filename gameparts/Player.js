@@ -76,7 +76,7 @@ class Player {
             this._nextPosY += this._gravity*deltaTime
 
             // COLLISIONS
-            const collisions = this.collisions, c_ll = collisions.length
+            const collisions = this._collisions, c_ll = collisions.length
             for (let i=0;i<c_ll;i++) {
                 const collision = collisions[i]
                 if (!settings.noclip) collision.detect([this._nextPosX, this._nextPosY], player.pos)
@@ -192,6 +192,11 @@ class Player {
             this.addDefaultCollision([[bounds[0][0], bounds[1][1]], bounds[1]], "squareBottom$"+square.id, squarePadding), //BOTTOM
             this.addDefaultCollision([bounds[0], [bounds[0][0], bounds[1][1]]], "squareLeft$"+square.id  , squarePadding) //LEFT
         ]
+    }
+
+    addInteraction(collision) {
+        this._collisions.push(collision)
+        return collision
     }
 
     /**

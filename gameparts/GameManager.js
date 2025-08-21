@@ -86,13 +86,16 @@ class GameManager {
         }
     }
 
+    /**
+     * Starts the game
+     */
     startGame() {
         this.#setupCanvas()
         this._gameStarted = true
         this.show(true)
 
         // POSITION PLAYER
-        this._player.pos = this._squares[0].obj.getCenter()
+        this._player.pos = [this._squares[0].obj.getCenter()[0], this._squares[0].obj.getBounds()[1][1]-150]
     }
 
     #createLevels(levelDeclarations) {
