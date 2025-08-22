@@ -3,18 +3,21 @@ class Collision {
     static DEFAULT_COLLISION_NAME = "block"
     static DEFAULT_HITBOX_COLOR = [0, 50, 200, 1]
     static DEFAULT_INTERACTION_HITBOX_COLOR = [200, 200, 100, 1]
+    static DEFAULT_END_HITBOX_COLOR = [255, 105, 180, 1]
     static DIRS = {TOP:1<<0, RIGHT:1<<1, BOTTOM:1<<2, LEFT:1<<3, TOP_LEFT:(1<<0)+(1<<3), TOP_RIGHT:(1<<0)+(1<<1), BOTTOM_LEFT:(1<<2)+(1<<3), BOTTOM_RIGHT:(1<<2)+(1<<3), ALL:(1<<4)-1}
     static DEFAULT_TYPES = {AREA_ENTER:0, END:1}
+    static NON_SOLID_COLLISION_PREFIX = "$"
 
     /**
      * Creates a collision area that detects when a pos intersects
      * @param {String?} name: the name of the collision
      * @param {_BaseObj | [[x1,y1], [x2,y2]]} positions: either a _BaseObj inheritor instance or a positions array defining the area
      * @param {Number | [paddingTop, paddingRight?, paddingBottom?, paddingLeft?] ?} padding: the padding applied to the area
-     * @param {Function?} onCollisionCB: Function called each frame the pos is inside the area. (collisionDirection)=>{...}
-     * @param {Function?} onCollisionEnterCB: Function called once each time a collision is detected. (collisionDirection)=>{...}
-     * @param {Function?} onCollisionExitCB: Function called once each time a collision is ended. (collisionDirection)=>{...}
+     * @param {Function?} onCollisionCB: Function called each frame the pos is inside the area. (collisionDirection, collision)=>{...}
+     * @param {Function?} onCollisionEnterCB: Function called once each time a collision is detected. (collisionDirection, collision)=>{...}
+     * @param {Function?} onCollisionExitCB: Function called once each time a collision is ended. (collisionDirection, collision)=>{...}
      * @param {boolean?} enableCornerDetection: If true, prevents 'collisionDirection' in collision callbacks to contain more than more direction when colliding with corners
+     * @param {Color | String | [r,g,b,a]?} hitboxColor: the color of the hitbox
      */
     constructor(name, positions, padding, onCollisionCB, onCollisionEnterCB, onCollisionExitCB, enableCornerDetection, hitboxColor) {
         this._id = Collision.#ID_GIVER++
@@ -28,7 +31,7 @@ class Collision {
         this._hitboxColor = hitboxColor||Collision.DEFAULT_HITBOX_COLOR
 
         this._hasCollision = false
-        this._lastDir = null
+        this._lastDir = Collision.DIRS.TOP
     }
 
     /**
@@ -96,11 +99,23 @@ class Collision {
     }
 
     static createAreaEnter(positions, onCollisionEnterCB, onCollisionCB, onCollisionExitCB, padding, hitboxColor) {
-        return new Collision("areaEnter", positions, padding, onCollisionCB, onCollisionEnterCB, onCollisionExitCB, false, hitboxColor||Collision.DEFAULT_INTERACTION_HITBOX_COLOR)
+        return GameManager.instance.player.addInteraction(new Collision(Collision.NON_SOLID_COLLISION_PREFIX+"areaEnter", positions, padding, onCollisionCB, onCollisionEnterCB, onCollisionExitCB, false, hitboxColor||Collision.DEFAULT_INTERACTION_HITBOX_COLOR))
+    }
+
+    /**
+     * Creates an area that acts as the end of a square/room. 
+     * @param {_BaseObj | [[x1,y1], [x2,y2]]} positions: either a _BaseObj inheritor instance or a positions array defining the area
+     * @param {Function?} onCollisionEnterCB: Function called once each time a collision is detected. (collisionDirection, collision)=>{...}
+     * @param {Number | [paddingTop, paddingRight?, paddingBottom?, paddingLeft?] ?} padding: the padding applied to the area
+     * @param {Color | String | [r,g,b,a]?} hitboxColor: the color of the hitbox
+     */
+    static createEnd(positions, onCollisionEnterCB, padding, hitboxColor) {
+        return GameManager.instance.player.addInteraction(new Collision(Collision.NON_SOLID_COLLISION_PREFIX+"end", positions, padding, null, onCollisionEnterCB, null, false, hitboxColor||Collision.DEFAULT_END_HITBOX_COLOR))
     }
 
 
     get name() {return this._name}
+    get isSolid() {return this._name[0]!=Collision.NON_SOLID_COLLISION_PREFIX}
     get positions() {return this.getPositionsValue()}
     get positionsRaw() {return this._positions}
     get padding() {return this._padding}

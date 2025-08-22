@@ -16,6 +16,7 @@ class GameManager {
         this._player = new Player(this._CVS)
         this._squares = this.#createSquares()
         this._obstacles = []
+        this._progress = 0
 
         this.#createLevels(levelDeclarations)
         this.hide()
@@ -95,7 +96,7 @@ class GameManager {
         this.show(true)
 
         // POSITION PLAYER
-        this._player.pos = [this._squares[0].obj.getCenter()[0], this._squares[0].obj.getBounds()[1][1]-150]
+        this._player.pos = this._squares[0].spawnPos
     }
 
     #createLevels(levelDeclarations) {
@@ -108,6 +109,8 @@ class GameManager {
     get player() {return this._player}
     get squares() {return this._squares}
     get gameStarted() {return this._gameStarted}
+    get progress() {return this._progress}
 
     set gameStarted(gameStarted) {this._gameStarted = gameStarted}
+    set progress(progress) {this._progress = progress}
 }

@@ -9,6 +9,7 @@ class Player {
         SHOW_HITBOXES:[TypingDevice.KEYS.P],
         SHOW_TRAJECTORY:[TypingDevice.KEYS.L]
     }
+    static NOCLIP_LEVELS = {DISABLED:0, ONLY_SOLIDS:1, ALL:2}
     static PHYSICAL_STATES = {AIR:0, GROUND:1}
     static MINIMAL_RADIUS = 5
     static MAXIMAL_RADIUS = 30
@@ -21,9 +22,12 @@ class Player {
     static DEFAULT_GRAVITY = 350
     static DEFAULT_JUMP_COUNT = 0
     static MAX_JUMP_COUNT = 2
+    static DEFAULT_COLOR = [255, 0, 0, 1]
+    static DEFAULT_RESPAWN_DELAY = 200
+    static DEFAULT_RESPAWN_TIME = 450
 
     constructor(CVS, spawnPos) {
-        this._obj = new Dot(spawnPos, Player.DEFAULT_RADIUS, "red", null, null, true)
+        this._obj = new Dot(spawnPos, Player.DEFAULT_RADIUS, Player.DEFAULT_COLOR, null, null, true)
         this._speed = Player.DEFAULT_SPEED
         this._radiusSpeed = Player.DEFAULT_RADIUS_SCALING_SPEED
         this._jumpHeight = Player.DEFAULT_JUMP_HEIGHT
@@ -34,11 +38,12 @@ class Player {
         this._gravity = Player.DEFAULT_GRAVITY
         this._nextPosX = null
         this._nextPosY = null
+        this._movementLocked = false
 
         this._collisions = []
         this._physicalState = false
         const interactions = this._interactions = Object.keys(Player.KEYBINDS).reduce((a,b)=>(a[b.toLowerCase()]=null,a),{}),
-              settings = this._settings = {showHitboxes:false, noclip:false, showTrajectory:false}
+              settings = this._settings = {showHitboxes:false, noclip:Player.NOCLIP_LEVELS.DISABLED, showTrajectory:false, showScreenCenter:false, showCoordinates:false}
 
         // PLAYER LOOP
         this._obj.loopCB = ()=>{
@@ -80,6 +85,7 @@ class Player {
             for (let i=0;i<c_ll;i++) {
                 const collision = collisions[i]
                 if (!settings.noclip) collision.detect([this._nextPosX, this._nextPosY], player.pos)
+                else if (settings.noclip==Player.NOCLIP_LEVELS.ONLY_SOLIDS && !collision.isSolid) collision.detect([this._nextPosX, this._nextPosY], player.pos)
                 if (settings.showHitboxes) collision.show(CVS.render)
             }
 
@@ -90,17 +96,26 @@ class Player {
             }
 
             // MOVE
-            player.x = this._nextPosX
-            player.y = this._nextPosY
+            if (!this._movementLocked) {
+                player.x = this._nextPosX
+                player.y = this._nextPosY
+            }
+
 
             // MOVE CAMERA
             const camMargin = GameManager.CAMERA_MARGIN, camSpeed = GameManager.CAMERA_MOVING_SPEED*deltaTime, viewPos = CVS.viewPos
-            
             if (player.x < camMargin-viewPos[0]) CVS.moveViewBy([camSpeed])
             else if (player.x+viewPos[0] > (CVS.width-camMargin)) CVS.moveViewBy([-camSpeed])
             if (player.y < camMargin-viewPos[1]) CVS.moveViewBy([0, camSpeed])
             else if (player.y+viewPos[1] > CVS.height-camMargin) CVS.moveViewBy([0, -camSpeed])
 
+            // SETTINGS
+            if (settings.showScreenCenter) {
+                const render = CVS.render, viewPos = CVS.viewPos
+                render.stroke(Render.getLine([CVS.width/2-viewPos[0], -viewPos[1]], [CVS.width/2-viewPos[0], CVS.height-viewPos[1]] ), [255,0,0,1])
+                render.stroke(Render.getLine([-viewPos[0], CVS.height/2-viewPos[1]], [CVS.width-viewPos[0], CVS.height/2-viewPos[1]]), [255,0,0,1])
+
+            }
         }
         CVS.add(this._obj)
     }
@@ -213,16 +228,52 @@ class Player {
         }
     }
 
+    cinematicMoveTo(pos, time=1000) {
+        this._gravity = 0
+        this._settings.noclip = Player.NOCLIP_LEVELS.ONLY_SOLIDS
+        this._obj.moveTo(pos, time)
+        setTimeout(()=>{
+            this._settings.noclip = Player.NOCLIP_LEVELS.DISABLED
+            this._gravity = Player.DEFAULT_GRAVITY
+        }, time)
+    }
+
+    disableMovements() {
+        this._movementLocked = true
+    }
+
+    enableMovements() {
+        this._movementLocked = false
+    }
+
+    die(spawnPos, time, delay) {
+        delay??=Player.DEFAULT_RESPAWN_DELAY
+        time??=Player.DEFAULT_RESPAWN_TIME
+        this._obj.color = "green"
+        this.disableMovements()
+        setTimeout(()=>{
+            this.cinematicMoveTo(spawnPos, time)
+        }, delay)
+        setTimeout(()=>{
+            this.enableMovements()
+            this._obj.color = Player.DEFAULT_COLOR
+        }, delay+time)
+    }
+
     get obj() {return this._obj}
 	get speed() {return this._speed}
 	get collisions() {return this._collisions}
 	get interactions() {return this._interactions}
     get isOnGround() {return this._physicalState==Player.PHYSICAL_STATES.GROUND}
     get physicalState() {return this._physicalState}
+    get settings() {return this._settings}
+    get gravity() {return this._gravity}
+    get pos() {return this._obj.pos}
 
 	set pos(pos) {this._obj.pos = pos}
 	set obj(_obj) {this._obj = _obj}
 	set speed(_speed) {this._speed = _speed}
 	set collisions(_collisions) {this._collisions = _collisions}
 	set interactions(_interactions) {this._interactions = _interactions}
+	set gravity(gravity) {this._gravity = gravity}
 }

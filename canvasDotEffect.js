@@ -4121,6 +4121,25 @@ class Canvas {
     }
 
     /**
+     * Moves the camera view center to a specific x/y value
+     * @param {[x,y]} pos: the pos to move the center of the camera view to
+     */
+    centerViewAt(pos) {
+        this.moveViewAt([-pos[0]+this.width/2, -pos[1]+this.height/2])
+    }
+
+    /**
+     * Smoothly moves the camera view center to the provided pos, in set time
+     * @param {[x,y]} pos: the pos to move the center of the camera view to
+     * @param {Number?} time: the move time in miliseconds
+     * @param {Function?} easing: the easing function used. (x)=>{return y} 
+     * @returns the created Anim instance
+     */
+    centerViewTo(pos, time=null, easing=null) {
+        this.moveViewTo([-pos[0]+this.width/2, -pos[1]+this.height/2], time, easing)
+    }
+
+    /**
      * Adds an animation to play
      * @param {Anim} anim: the Anim instance containing the animation
      * @returns the provided Anim instance
@@ -7518,7 +7537,10 @@ class Shape extends _Obj {
      */
     isWithinAccurate(pos) {
         const dots = this._dots, d_ll = dots.length
-        if (d_ll > 2) return this.ctx.isPointInPath(this.getBoundsAccurate(), pos[0], pos[1])
+        if (d_ll > 2) {
+            const viewPos = this.cvs.viewPos
+            return this.ctx.isPointInPath(this.getBoundsAccurate(), pos[0]+viewPos[0], pos[1]+viewPos[1])
+        }
         return false
     }
 

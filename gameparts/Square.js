@@ -9,6 +9,7 @@ class Square {
         GameManager.instance.CVS.add(this._obj)        
         this._objects = []
         this._collisions = GameManager.instance.player.addDefaultSquareCollision(this._obj)
+        this._spawnPos = null
     }
 
     #createSquare(CVS, pos, size, backgroundColor, borderColor) {
@@ -73,6 +74,8 @@ class Square {
     get id() {return this._obj.id}
     get obj() {return this._obj}
     get collisions() {return this._collisions}
+    get spawnPos() {return this._spawnPos}
 
     set collisions(collisions) {this._collisions = collisions}
+    set spawnPos(spawnPos) {this._spawnPos = spawnPos}
 }
