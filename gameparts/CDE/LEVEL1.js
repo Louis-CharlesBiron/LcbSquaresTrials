@@ -7,6 +7,9 @@ function getLevel1Declaration(square, gameManager) {
     // SET SPAWNPOS
     square.spawnPos = [centerX, bottom-standardDist*2]
 
+    // SET CAMERA
+    gameManager.CVS.centerViewAt(square.obj.getCenter())
+
     // OBSTACLES
     square.addObject(Obstacle.createFromCenter([centerX, bottom-100], standardSize*2, standardSize/2)) // CONCRETE THING AT START
 

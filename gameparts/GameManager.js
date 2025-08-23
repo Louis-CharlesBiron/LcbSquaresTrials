@@ -97,6 +97,15 @@ class GameManager {
 
         // POSITION PLAYER
         this._player.pos = this._squares[0].spawnPos
+
+        // LOAD SHADER
+        Canvas.loadSVGFilter(`<svg>
+        <filter id="turbulence">
+          <feTurbulence type="turbulence" baseFrequency="0.01 0.02" numOctaves="1" result="NOISE"></feTurbulence>
+          <feDisplacementMap in="SourceGraphic" in2="NOISE" scale="50">
+          </feDisplacementMap>
+        </filter>
+       </svg>`, "deathEffect")
     }
 
     #createLevels(levelDeclarations) {

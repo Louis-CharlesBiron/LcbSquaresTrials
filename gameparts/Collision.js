@@ -113,7 +113,6 @@ class Collision {
         return GameManager.instance.player.addInteraction(new Collision(Collision.NON_SOLID_COLLISION_PREFIX+"end", positions, padding, null, onCollisionEnterCB, null, false, hitboxColor||Collision.DEFAULT_END_HITBOX_COLOR))
     }
 
-
     get name() {return this._name}
     get isSolid() {return this._name[0]!=Collision.NON_SOLID_COLLISION_PREFIX}
     get positions() {return this.getPositionsValue()}

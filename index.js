@@ -7,6 +7,9 @@ const gameManager = new GameManager([
 
 // TEMP
 mainMenu.hide(true)
-GameManager.instance.startGame()
+gameManager.startGame()
+
+gameManager.player.pos = gameManager.squares[1].spawnPos
+gameManager.CVS.centerViewAt(gameManager.squares[1].obj.getCenter())
 // TEMP
 

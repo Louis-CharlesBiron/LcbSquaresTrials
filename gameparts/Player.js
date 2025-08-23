@@ -21,7 +21,7 @@ class Player {
     static DEFAULT_JUMP_DURATION = 850
     static DEFAULT_GRAVITY = 350
     static DEFAULT_JUMP_COUNT = 0
-    static MAX_JUMP_COUNT = 2
+    static DEFAULT_MAX_JUMP_COUNT = 2
     static DEFAULT_COLOR = [255, 0, 0, 1]
     static DEFAULT_RESPAWN_DELAY = 200
     static DEFAULT_RESPAWN_TIME = 450
@@ -39,11 +39,13 @@ class Player {
         this._nextPosX = null
         this._nextPosY = null
         this._movementLocked = false
+        this._isDead = false
 
         this._collisions = []
         this._physicalState = false
         const interactions = this._interactions = Object.keys(Player.KEYBINDS).reduce((a,b)=>(a[b.toLowerCase()]=null,a),{}),
-              settings = this._settings = {showHitboxes:false, noclip:Player.NOCLIP_LEVELS.DISABLED, showTrajectory:false, showScreenCenter:false, showCoordinates:false}
+              settings = this._settings = {showHitboxes:false, noclip:Player.NOCLIP_LEVELS.DISABLED, showTrajectory:false, showScreenCenter:false, showCoordinates:false},
+              render = CVS.render
 
         // PLAYER LOOP
         this._obj.loopCB = ()=>{
@@ -81,18 +83,21 @@ class Player {
             this._nextPosY += this._gravity*deltaTime
 
             // COLLISIONS
-            const collisions = this._collisions, c_ll = collisions.length
+            const collisions = this._collisions, c_ll = collisions.length, nextPos = [this._nextPosX, this._nextPosY],
+                  hasNoclipDisabled = !settings.noclip, hasSolidOnlyNoclip = settings.noclip==Player.NOCLIP_LEVELS.ONLY_SOLIDS, hasShowHitboxes = settings.showHitboxes
             for (let i=0;i<c_ll;i++) {
                 const collision = collisions[i]
-                if (!settings.noclip) collision.detect([this._nextPosX, this._nextPosY], player.pos)
-                else if (settings.noclip==Player.NOCLIP_LEVELS.ONLY_SOLIDS && !collision.isSolid) collision.detect([this._nextPosX, this._nextPosY], player.pos)
-                if (settings.showHitboxes) collision.show(CVS.render)
+                if (hasNoclipDisabled) collision.detect(nextPos, player.pos)
+                else if (hasSolidOnlyNoclip && !collision.isSolid) collision.detect(nextPos, player.pos)
+                if (hasShowHitboxes) collision.show(render)
             }
 
+            //if (hasShowHitboxes) render.fill(Render.getArc(player._pos, 2), [0,0,255,1])
+
             if (settings.showTrajectory) {
-                CVS.render.fill(Render.getArc(player._pos, 3), [255,255,0,1])
-                CVS.render.fill(Render.getArc([this._nextPosX, this._nextPosY], 3), [0,200,0,1])
-                CVS.render.stroke(Render.getLine(player._pos, [this._nextPosX, this._nextPosY]), [0,255,0,1])
+                render.fill(Render.getArc(player._pos, 3), [255,255,0,1])
+                render.fill(Render.getArc(nextPos, 3), [0,200,0,1])
+                render.stroke(Render.getLine(player._pos, nextPos), [0,255,0,1])
             }
 
             // MOVE
@@ -100,7 +105,6 @@ class Player {
                 player.x = this._nextPosX
                 player.y = this._nextPosY
             }
-
 
             // MOVE CAMERA
             const camMargin = GameManager.CAMERA_MARGIN, camSpeed = GameManager.CAMERA_MOVING_SPEED*deltaTime, viewPos = CVS.viewPos
@@ -154,7 +158,7 @@ class Player {
      */
     #enterGround(collision) {
         this._physicalState = Player.PHYSICAL_STATES.GROUND
-        this._jumpCount = Player.MAX_JUMP_COUNT
+        this._jumpCount = Player.DEFAULT_MAX_JUMP_COUNT
     }
 
     /**
@@ -247,17 +251,31 @@ class Player {
     }
 
     die(spawnPos, time, delay) {
-        delay??=Player.DEFAULT_RESPAWN_DELAY
-        time??=Player.DEFAULT_RESPAWN_TIME
-        this._obj.color = "green"
-        this.disableMovements()
-        setTimeout(()=>{
-            this.cinematicMoveTo(spawnPos, time)
-        }, delay)
-        setTimeout(()=>{
-            this.enableMovements()
-            this._obj.color = Player.DEFAULT_COLOR
-        }, delay+time)
+        if (!this._isDead) {
+            delay??=Player.DEFAULT_RESPAWN_DELAY
+            time??=Player.DEFAULT_RESPAWN_TIME
+
+            this.disableMovements()
+            this._isDead = true
+
+            const obj = this._obj, initRgba = obj.rgba
+            obj.playAnim(new Anim(prog=>{
+                prog = (1-Math.sin(prog*Math.PI))
+                obj.color = [initRgba[0]*prog, initRgba[1]*prog, initRgba[2]*prog, 1]
+            }, time))
+
+            setTimeout(()=>{
+                obj.filter = "url(#deathEffect)"
+                this.cinematicMoveTo(spawnPos, time)
+            }, delay)
+            setTimeout(()=>{
+                this.enableMovements()
+                this._jumpCount = Player.DEFAULT_MAX_JUMP_COUNT
+                obj.color = Player.DEFAULT_COLOR
+                obj.filter = null
+                this._isDead = false
+            }, delay+time)
+        }
     }
 
     get obj() {return this._obj}

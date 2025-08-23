@@ -16,7 +16,7 @@ class Spike {
         if (this._obj.isWithinAccurate(pos)) {
             if (!this._hasCollision && CDEUtils.isFunction(this._collisionCB)) this._collisionCB(this)
             this._hasCollision = true
-        } else if (this._hasCollision) this._hasCollision = false
+        } else if (this._hasCollision && !this._obj.isWithin(pos, 5)) this._hasCollision = false
     }
 
     #createObj(pos, rotation, height, width, color) {
@@ -26,4 +26,13 @@ class Spike {
         height??=Spike.DEFAULT_HEIGHT
         return new FilledShape(color, true, pos, [new Dot([-width/2, 0]),new Dot([width/2, 0]),new Dot([0, height])], 0, null, null, null, null, obj=>obj.rotateAt(rotation??Spike.ROTATIONS.TOP))
     }
+
+    /**
+     * Visually shows the collision
+     * @param {Render} render: a render instance
+     */
+    show(render) {
+        CanvasUtils.drawOutlineAccurate(render, this._obj)
+    }
+
 }
