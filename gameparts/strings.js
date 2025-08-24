@@ -21,6 +21,11 @@ or something alr
 `,
 
     easterEgg1:":^)",
-    tuto5:`you probably don't want
-to touch these idk`
+    tuto5:`you probably don't 
+want to touch these
+red things idk`,
+    endText2:`- END -
+END here
+end HERE
+END here`
 }

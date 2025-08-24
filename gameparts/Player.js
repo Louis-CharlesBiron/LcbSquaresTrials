@@ -232,14 +232,25 @@ class Player {
         }
     }
 
-    cinematicMoveTo(pos, time=1000) {
+    cinematicMoveTo(pos, time=1000, easing) {
         this._gravity = 0
         this._settings.noclip = Player.NOCLIP_LEVELS.ONLY_SOLIDS
-        this._obj.moveTo(pos, time)
+        this._obj.moveTo(pos, time, easing)
         setTimeout(()=>{
             this._settings.noclip = Player.NOCLIP_LEVELS.DISABLED
             this._gravity = Player.DEFAULT_GRAVITY
         }, time)
+    }
+
+    multipleCinematicMoves(totalTime, ...posArray) {
+        const p_ll = posArray.length, stepTime = totalTime/p_ll
+        this._gravity = 0
+        this._settings.noclip = Player.NOCLIP_LEVELS.ONLY_SOLIDS
+        for (let i=0;i<p_ll;i++) setTimeout(()=>this._obj.moveTo(posArray[i], stepTime, Anim.linear), stepTime*i)
+        setTimeout(()=>{
+            this._settings.noclip = Player.NOCLIP_LEVELS.DISABLED
+            this._gravity = Player.DEFAULT_GRAVITY
+        }, stepTime)
     }
 
     disableMovements() {

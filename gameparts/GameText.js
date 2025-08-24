@@ -1,5 +1,5 @@
 class GameText {
-    static DEFAULT_FADING_DISTANCE = 125
+    static DEFAULT_FADING_DISTANCE = 1250
     static DEFAULT_TEXT_LOOP_EFFECT = obj=>obj.a=CDEUtils.mod(1, CDEUtils.getRatio(GameManager.instance.player.obj, obj, GameText.DEFAULT_FADING_DISTANCE), 0.95)
     static FADINGS = {OUT:0, IN:1}
 
