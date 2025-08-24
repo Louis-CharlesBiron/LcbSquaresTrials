@@ -32,15 +32,15 @@ function getLevel3Declaration(square, gameManager) {
       // INTERACTIONS
       
       // Fading text
-      square.addObject(Collision.createAreaEnter([[left, top], [left+standardSize*2, top+standardDist]], ()=>appearingText1.smoothFade(GameText.FADINGS.IN, 500), null, ()=>appearingText1.smoothFade(GameText.FADINGS.OUT, 500)))
+     // square.addObject(Collision.createAreaEnter([[left, top], [left+standardSize*2, top+standardDist]], ()=>appearingText1.smoothFade(GameText.FADINGS.IN, 500), null, ()=>appearingText1.smoothFade(GameText.FADINGS.OUT, 500)))
       
 
       // INTERACTIONS
       // End
-      square.addObject(Collision.createEnd([[left+standardDist, top],[left+standardDist*1.5, top+standardDist*1.5]], ()=>{
-          gameManager.progress = LEVEL
-          player.obj.moveTo(gameManager.squares[LEVEL].spawnPos, 2000, Anim.easeOutQuad)
-      }))
+      //square.addObject(Collision.createEnd([[left+standardDist, top],[left+standardDist*1.5, top+standardDist*1.5]], ()=>{
+      //    gameManager.progress = LEVEL
+      //    player.obj.moveTo(gameManager.squares[LEVEL].spawnPos, 2000, Anim.easeOutQuad)
+      //}))
 
 
 

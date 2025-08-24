@@ -4,6 +4,8 @@ class Player {
         DOWN:[TypingDevice.KEYS.S, TypingDevice.KEYS.ARROW_DOWN],
         RIGHT:[TypingDevice.KEYS.D, TypingDevice.KEYS.ARROW_RIGHT],
         LEFT:[TypingDevice.KEYS.A, TypingDevice.KEYS.ARROW_LEFT],
+        DIE:[TypingDevice.KEYS.K],
+        MUTE:[TypingDevice.KEYS.M],
         SMALLER:[TypingDevice.KEYS.ARROW_DOWN],
         BIGGER:[TypingDevice.KEYS.ARROW_UP],
         SHOW_HITBOXES:[TypingDevice.KEYS.P],
@@ -89,7 +91,7 @@ class Player {
             for (let i=0;i<c_ll;i++) {
                 const collision = collisions[i]
                 if (hasNoclipDisabled || (hasSolidOnlyNoclip && !collision.isSolid) || (hasDangerOnlyNoclip && !collision.isSpike)) collision.detect(nextPos, player.pos)
-                    
+
                 if (hasShowHitboxes) collision.show(render)
             }
 
@@ -149,9 +151,13 @@ class Player {
         // TOGGLES
         if (keyboard.isDown(keys.SHOW_HITBOXES)) this._settings.showHitboxes = !this._settings.showHitboxes
         if (keyboard.isDown(keys.SHOW_TRAJECTORY)) this._settings.showTrajectory = !this._settings.showTrajectory
+        if (keyboard.isDown(keys.MUTE)) GameManager.instance.musicManager.muted = !GameManager.instance.musicManager.muted
 
         // JUMP LOCK
         if (!this._interactions.up && this._jumpHoldLock) this._jumpHoldLock = false
+
+        // DIE
+        if (keyboard.isDown(keys.DIE)) this.die(GameManager.instance.currentSpawnPos)
     }
 
     /**

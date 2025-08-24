@@ -7,9 +7,10 @@ const gameManager = new GameManager([
 ])
 
 // TEMP
-//mainMenu.hide(true)
-//gameManager.startGame()
+mainMenu.hide(true)
+gameManager.startGame()
 
-//gameManager.skipTo(0)
+//gameManager.skipTo(2)
+gameManager.musicManager.muted = true
 // TEMP
 

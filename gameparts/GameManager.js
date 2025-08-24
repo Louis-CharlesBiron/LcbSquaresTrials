@@ -5,6 +5,7 @@ class GameManager {
     static DEFAULT_SONG_FOLDER_PATH = "assets/music/"
     static DEFAULT_SONG_NAME_PREFIX = "song"
     static DEFAULT_SONG_EXTENSION = ".mp3"
+    static DEFAULT_FPS_CAP = null
     
     constructor(levelDeclarations) {
         if (!GameManager.instance) GameManager.instance = this
@@ -19,7 +20,7 @@ class GameManager {
                 this._roomTimes[this._progress] += (this._CVS.deltaTime*1000)|0
                 timeDisplay.textContent =this._roomTimes.filter(x=>x).join(" | ")+" ( "+this.#getTotalTime()+" )"
             }
-        })
+        }, GameManager.DEFAULT_FPS_CAP)
         this._gameStarted = false
         this._player = new Player(this._CVS)
         this._squares = this.#createSquares()
@@ -149,6 +150,7 @@ class GameManager {
     get gameStarted() {return this._gameStarted}
     get progress() {return this._progress}
     get musicManager() {return this._musicManager}
+    get currentSpawnPos() {return this._squares[this._progress].spawnPos}
 
     set gameStarted(gameStarted) {this._gameStarted = gameStarted}
     set progress(progress) {this._progress = progress}

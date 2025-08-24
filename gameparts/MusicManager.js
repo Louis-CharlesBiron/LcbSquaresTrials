@@ -20,11 +20,11 @@ class MusicManager {
         if (this.src) this._audio.pause()
     }
 
-
-
     get src() {return this._audio?.src}
     get volume() {return this._audio?.volume}
+    get muted() {return this._audio?.muted}
 
     set src(src) {this._audio.src = src}
     set volume(volume) {this._audio.volume = volume}
+    set muted(muted) {this._audio.muted = muted}
 }
