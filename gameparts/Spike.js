@@ -35,4 +35,6 @@ class Spike {
         CanvasUtils.drawOutlineAccurate(render, this._obj)
     }
 
+    get isSpike() {return true}
+
 }

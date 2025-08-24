@@ -11,15 +11,27 @@ class GameManager {
         this._CVS = Canvas.create(null, ()=>{//looping
             let fps = fpsCounter.getFps()
             if (fpsDisplay.textContent !== fps) fpsDisplay.textContent = fps
+
+            if (this._gameStarted) {
+                this._roomTimes[this._progress] += (this._CVS.deltaTime*1000)|0
+                timeDisplay.textContent =this._roomTimes.filter(x=>x).join(" | ")+" ( "+this.#getTotalTime()+" )"
+            }
         })
         this._gameStarted = false
         this._player = new Player(this._CVS)
         this._squares = this.#createSquares()
         this._obstacles = []
         this._progress = 0
+        this._roomTimes = new Array(9).fill(0)
 
         this.#createLevels(levelDeclarations)
         this.hide()
+    }
+
+    #getTotalTime() {
+        let total = 0
+        for (let i=0;i<9;i++) total += this._roomTimes[i]||0
+        return total
     }
 
     #createSquares() {

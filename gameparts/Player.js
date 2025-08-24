@@ -9,7 +9,7 @@ class Player {
         SHOW_HITBOXES:[TypingDevice.KEYS.P],
         SHOW_TRAJECTORY:[TypingDevice.KEYS.L]
     }
-    static NOCLIP_LEVELS = {DISABLED:0, ONLY_SOLIDS:1, ALL:2}
+    static NOCLIP_LEVELS = {DISABLED:0, ONLY_SOLIDS:1, ONLY_DANGER:2, ALL:3}
     static PHYSICAL_STATES = {AIR:0, GROUND:1}
     static MINIMAL_RADIUS = 5
     static MAXIMAL_RADIUS = 30
@@ -40,6 +40,7 @@ class Player {
         this._nextPosY = null
         this._movementLocked = false
         this._isDead = false
+        this._deathCount = 0
 
         this._collisions = []
         this._physicalState = false
@@ -84,11 +85,11 @@ class Player {
 
             // COLLISIONS
             const collisions = this._collisions, c_ll = collisions.length, nextPos = [this._nextPosX, this._nextPosY],
-                  hasNoclipDisabled = !settings.noclip, hasSolidOnlyNoclip = settings.noclip==Player.NOCLIP_LEVELS.ONLY_SOLIDS, hasShowHitboxes = settings.showHitboxes
+                  hasNoclipDisabled = !settings.noclip, hasSolidOnlyNoclip = settings.noclip==Player.NOCLIP_LEVELS.ONLY_SOLIDS, hasDangerOnlyNoclip = settings.noclip==Player.NOCLIP_LEVELS.ONLY_DANGER, hasShowHitboxes = settings.showHitboxes
             for (let i=0;i<c_ll;i++) {
                 const collision = collisions[i]
-                if (hasNoclipDisabled) collision.detect(nextPos, player.pos)
-                else if (hasSolidOnlyNoclip && !collision.isSolid) collision.detect(nextPos, player.pos)
+                if (hasNoclipDisabled || (hasSolidOnlyNoclip && !collision.isSolid) || (hasDangerOnlyNoclip && !collision.isSpike)) collision.detect(nextPos, player.pos)
+                    
                 if (hasShowHitboxes) collision.show(render)
             }
 
@@ -268,6 +269,8 @@ class Player {
 
             this.disableMovements()
             this._isDead = true
+            this._deathCount++
+            deathsDisplay.textContent = this._deathCount
 
             const obj = this._obj, initRgba = obj.rgba
             obj.playAnim(new Anim(prog=>{
