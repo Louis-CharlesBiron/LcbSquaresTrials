@@ -7,12 +7,9 @@ const gameManager = new GameManager([
 ])
 
 // TEMP
-mainMenu.hide(true)
-gameManager.startGame()
+//mainMenu.hide(true)
+//gameManager.startGame()
 
-const skipTo = 2
-gameManager.progress = skipTo
-gameManager.player.pos = gameManager.squares[skipTo].spawnPos
-gameManager.CVS.centerViewAt(gameManager.squares[skipTo].obj.getCenter())
+//gameManager.skipTo(0)
 // TEMP
 

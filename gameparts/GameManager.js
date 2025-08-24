@@ -2,6 +2,9 @@ class GameManager {
     static instance = null
     static CAMERA_MARGIN = 100
     static CAMERA_MOVING_SPEED = 185
+    static DEFAULT_SONG_FOLDER_PATH = "assets/music/"
+    static DEFAULT_SONG_NAME_PREFIX = "song"
+    static DEFAULT_SONG_EXTENSION = ".mp3"
     
     constructor(levelDeclarations) {
         if (!GameManager.instance) GameManager.instance = this
@@ -23,6 +26,7 @@ class GameManager {
         this._obstacles = []
         this._progress = 0
         this._roomTimes = new Array(9).fill(0)
+        this._musicManager = new MusicManager(musicElement)
 
         this.#createLevels(levelDeclarations)
         this.hide()
@@ -99,6 +103,10 @@ class GameManager {
         }
     }
 
+    playSong(roomNumber) {
+        this._musicManager.loadMusic(GameManager.DEFAULT_SONG_FOLDER_PATH+GameManager.DEFAULT_SONG_NAME_PREFIX+roomNumber+GameManager.DEFAULT_SONG_EXTENSION)
+    }
+
     /**
      * Starts the game
      */
@@ -110,6 +118,9 @@ class GameManager {
         // POSITION PLAYER
         this._player.pos = this._squares[0].spawnPos
 
+        // PLAY ROOM 1 SONG
+        this.playSong(0)
+
         // LOAD SHADER
         Canvas.loadSVGFilter(`<svg>
         <filter id="turbulence">
@@ -118,6 +129,12 @@ class GameManager {
           </feDisplacementMap>
         </filter>
        </svg>`, "deathEffect")
+    }
+
+    skipTo(roomNumber) {
+        this._progress = roomNumber
+        this._player.pos = this._squares[roomNumber].spawnPos
+        this._CVS.centerViewAt(this._squares[roomNumber].obj.getCenter())
     }
 
     #createLevels(levelDeclarations) {
@@ -131,6 +148,7 @@ class GameManager {
     get squares() {return this._squares}
     get gameStarted() {return this._gameStarted}
     get progress() {return this._progress}
+    get musicManager() {return this._musicManager}
 
     set gameStarted(gameStarted) {this._gameStarted = gameStarted}
     set progress(progress) {this._progress = progress}

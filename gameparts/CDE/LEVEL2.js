@@ -106,6 +106,9 @@ function getLevel2Declaration(square, gameManager) {
         const transitionTime = 5000
         gameManager.progress = LEVEL
         gameManager.player.multipleCinematicMoves(transitionTime, [1265, 80], [1375, 250], [1329, 350], [1165, 350], [1165, 615], [1600, 500], gameManager.squares[LEVEL].spawnPos)
-        setTimeout(()=>gameManager.CVS.centerViewTo(nextSquare.obj.getCenter(), 2000), transitionTime+300)
+        setTimeout(()=>{
+            gameManager.playSong(LEVEL)
+            gameManager.CVS.centerViewTo(nextSquare.obj.getCenter(), 2000)
+        }, transitionTime+300)
     }))
 }

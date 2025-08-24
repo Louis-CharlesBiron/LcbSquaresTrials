@@ -82,6 +82,7 @@ function getLevel1Declaration(square, gameManager) {
     square.addObject(Collision.createAreaEnter([[right+10, centerY], [right+standardDist*2.5, bottom]], null, null, ()=>{
         appearingText2.smoothFade(GameText.FADINGS.OUT, 7000)
         gameManager.CVS.centerViewTo(nextSquare.obj.getCenter(), 3500)
+        gameManager.playSong(LEVEL)
     }))
 
 
