@@ -5,15 +5,47 @@ function getLevel3Declaration(square, gameManager) {
           textColor = [135, 206, 235, 0]
 
       // SET SPAWNPOS
-      square.spawnPos = [left+standardDist*2, bottom-standardSize*2]
+      square.spawnPos = [right-standardSize, bottom-standardDist]
       const deathCB = Spike.GET_DEFAULT_DEATH_COLLISION_CB(square.spawnPos)
 
       // OBSTACLES
-      square.addObject(new Obstacle([left+standardSize*1.5, centerY], standardSize, size/2)) // BOTTOM BIG WALL AT SPAWN
-      square.addObject(new Spike([left+standardSize*3.5, centerY-standardSpikeSize], null, deathCB))
+      square.addObject(new Obstacle([right-standardSize*2, bottom-standardSize], standardSize*2, standardSize)) // SMALL SPAWN BLOCK
+      square.addObject(new Obstacle([left+standardSize*2, bottom-standardDist*1.5], size-standardSize*2, standardSize)) // ROOF AT SPAWN
 
+      square.addObject(new Spike([left+standardSpikeSize/2, bottom-standardSpikeSize], null, deathCB))
+      square.addObject(new Spike([left+standardSpikeSize*1.5, bottom-standardSpikeSize], null, deathCB))
+      square.addObject(new Spike([left+standardSpikeSize*2.5, bottom-standardSpikeSize], null, deathCB))
+      square.addObject(new Spike([left+standardSpikeSize*3.5, bottom-standardSpikeSize], null, deathCB))
+      square.addObject(new Spike([left+standardSpikeSize*4.5, bottom-standardSpikeSize], null, deathCB))
+      square.addObject(new Spike([left+standardSpikeSize*5.5, bottom-standardSpikeSize], null, deathCB))
+      square.addObject(new Spike([left+standardSpikeSize*6.5, bottom-standardSpikeSize], null, deathCB))
+      square.addObject(new Spike([left+standardSpikeSize*7.5, bottom-standardSpikeSize], null, deathCB))
+      square.addObject(new Spike([left+standardSpikeSize*8.5, bottom-standardSpikeSize], null, deathCB))
+      square.addObject(new Spike([left+standardSpikeSize*9.5, bottom-standardSpikeSize], null, deathCB))
+      square.addObject(new Spike([left+standardSpikeSize*10.5, bottom-standardSpikeSize], null, deathCB))
+      square.addObject(new Spike([left+standardSpikeSize*11.5, bottom-standardSpikeSize], null, deathCB))
+      square.addObject(new Spike([left+standardSpikeSize*12.5, bottom-standardSpikeSize], null, deathCB))
+      square.addObject(new Spike([left+standardSpikeSize*13.5, bottom-standardSpikeSize], null, deathCB))
+      square.addObject(new Spike([left+standardSpikeSize*14.5, bottom-standardSpikeSize], null, deathCB))
 
+      square.addObject(new Orb([left+standardSpikeSize*.5, bottom-standardSpikeSize*2], Orb.GET_DEFAULT_ORB_COLLISION_CB()))
+      square.addObject(new Orb([left+standardSpikeSize*1.5, bottom-standardSpikeSize*2], Orb.GET_DEFAULT_ORB_COLLISION_CB()))
+      square.addObject(new Orb([left+standardSpikeSize*2.5, bottom-standardSpikeSize*2], Orb.GET_DEFAULT_ORB_COLLISION_CB()))
+      square.addObject(new Orb([left+standardSpikeSize*3.5, bottom-standardSpikeSize*2], Orb.GET_DEFAULT_ORB_COLLISION_CB()))
+      square.addObject(new Orb([left+standardSpikeSize*4.5, bottom-standardSpikeSize*2], Orb.GET_DEFAULT_ORB_COLLISION_CB()))
+      square.addObject(new Orb([left+standardSpikeSize*5.5, bottom-standardSpikeSize*2], Orb.GET_DEFAULT_ORB_COLLISION_CB()))
+      square.addObject(new Orb([left+standardSpikeSize*6.5, bottom-standardSpikeSize*2], Orb.GET_DEFAULT_ORB_COLLISION_CB()))
+      square.addObject(new Orb([left+standardSpikeSize*7.5, bottom-standardSpikeSize*2], Orb.GET_DEFAULT_ORB_COLLISION_CB()))
+      square.addObject(new Orb([left+standardSpikeSize*8.5, bottom-standardSpikeSize*2], Orb.GET_DEFAULT_ORB_COLLISION_CB()))
+      square.addObject(new Orb([left+standardSpikeSize*9.5, bottom-standardSpikeSize*2], Orb.GET_DEFAULT_ORB_COLLISION_CB()))
+      square.addObject(new Orb([left+standardSpikeSize*10.5, bottom-standardSpikeSize*2], Orb.GET_DEFAULT_ORB_COLLISION_CB()))
+      square.addObject(new Orb([left+standardSpikeSize*11.5, bottom-standardSpikeSize*2], Orb.GET_DEFAULT_ORB_COLLISION_CB()))
+      square.addObject(new Orb([left+standardSpikeSize*12.5, bottom-standardSpikeSize*2], Orb.GET_DEFAULT_ORB_COLLISION_CB()))
+      square.addObject(new Orb([left+standardSpikeSize*13.5, bottom-standardSpikeSize*2], Orb.GET_DEFAULT_ORB_COLLISION_CB()))
+      square.addObject(new Orb([left+standardSpikeSize*14.5, bottom-standardSpikeSize*2], Orb.GET_DEFAULT_ORB_COLLISION_CB()))
 
+      square.addObject(new Obstacle([left+standardSize*3, bottom-standardSize*8.5], standardSize, standardSize*3)) // BLOCKER RIGHT
+      square.addObject(new Obstacle([left, bottom-standardSize*8.5], standardSize*3, standardSize)) // BLOCKER TOP
       
 
 
@@ -24,15 +56,13 @@ function getLevel3Declaration(square, gameManager) {
             textProfile2_16px = CVS.render.textProfile2
 
       // TEXT
-      const appearingText1 = square.addObject(new GameText(S.easterEgg1, [left+standardSize*0.85, top+standardSize], textColor, textProfile2_16px, true))
-
-      square.addObject(new GameText(S.tuto5, [left+standardDist*2.75, centerY-standardDist*1.5], textColor, textProfile2_16px))
+      const appearingText1 = square.addObject(new GameText(S.tuto6, [centerX, bottom+standardSize], textColor, textProfile2_16px, true))
 
 
       // INTERACTIONS
       
       // Fading text
-     // square.addObject(Collision.createAreaEnter([[left, top], [left+standardSize*2, top+standardDist]], ()=>appearingText1.smoothFade(GameText.FADINGS.IN, 500), null, ()=>appearingText1.smoothFade(GameText.FADINGS.OUT, 500)))
+      square.addObject(Collision.createAreaEnter([[right-standardDist, bottom-standardSize*3], [right, bottom]], ()=>appearingText1.smoothFade(GameText.FADINGS.IN, 500), null, ()=>appearingText1.smoothFade(GameText.FADINGS.OUT, 500)))
       
 
       // INTERACTIONS

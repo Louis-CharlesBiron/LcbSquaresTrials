@@ -27,5 +27,12 @@ red things idk`,
     endText2:`- END -
 END here
 end HERE
-END here`
+END here`,
+
+    tuto6:`These bunch of spike all over the ground are not really nice.
+
+Fortunately, someone conveniently placed these yellow orbs right over,
+that's prob great news for you big G, now you can use them to traverse!
+
+(litteraly just click)`
 }

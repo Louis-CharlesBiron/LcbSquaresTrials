@@ -10,7 +10,7 @@ const gameManager = new GameManager([
 mainMenu.hide(true)
 gameManager.startGame()
 
-//gameManager.skipTo(2)
+gameManager.skipTo(2)
 gameManager.musicManager.muted = true
 // TEMP
 

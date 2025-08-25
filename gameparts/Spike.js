@@ -23,7 +23,7 @@ class Spike {
         color??=Spike.DEFAULT_COLOR
         width??=Spike.DEFAULT_WIDTH
         height??=Spike.DEFAULT_HEIGHT
-        height??=Spike.DEFAULT_HEIGHT
+        rotation??=Spike.ROTATIONS.TOP
         return new FilledShape(color, true, pos, [new Dot([-width/2, 0]),new Dot([width/2, 0]),new Dot([0, height])], 0, null, null, null, null, obj=>obj.rotateAt(rotation??Spike.ROTATIONS.TOP))
     }
 

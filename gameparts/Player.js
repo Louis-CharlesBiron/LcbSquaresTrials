@@ -69,7 +69,11 @@ class Player {
                 if (this._jumpAnim) this._jumpAnim.end(deltaTime)
                 this._jumpAnim = new Anim((prog, i, deltaTime)=>{
                     this._nextPosY -= (1-prog)*this.#getRadiusAdjustedJumpHeight()*deltaTime
-                }, this._jumpDuration, Anim.easeInOutQuad, ()=>this._jumpAnim=null)
+                }, this._jumpDuration, Anim.easeInOutQuad, ()=>{
+                    // ON JUMP END
+                    this._jumpAnim = null
+                    this._jumpHeight = Player.DEFAULT_JUMP_HEIGHT
+                })
             }
 
             if (this._jumpAnim) this._jumpAnim.getFrame(CVS.timeStamp, deltaTime)
@@ -307,6 +311,8 @@ class Player {
     get settings() {return this._settings}
     get gravity() {return this._gravity}
     get pos() {return this._obj.pos}
+    get jumpHeight() {return this._jumpHeight}
+    get jumpCount() {return this._jumpCount}
 
 	set pos(pos) {this._obj.pos = pos}
 	set obj(_obj) {this._obj = _obj}
@@ -314,4 +320,6 @@ class Player {
 	set collisions(_collisions) {this._collisions = _collisions}
 	set interactions(_interactions) {this._interactions = _interactions}
 	set gravity(gravity) {this._gravity = gravity}
+    set jumpHeight(jumpHeight) {this._jumpHeight = jumpHeight}
+    set jumpCount(jumpCount) {this._jumpCount = jumpCount}
 }
