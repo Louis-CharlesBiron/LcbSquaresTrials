@@ -30,9 +30,12 @@ end HERE
 END here`,
 
     tuto6:`These bunch of spike all over the ground are not really nice.
-
 Fortunately, someone conveniently placed these yellow orbs right over,
 that's prob great news for you big G, now you can use them to traverse!
-
-(litteraly just click)`
+(litteraly just click)`,
+    huh:"?",
+    hey:":]",
+    doubleArrow:"⇅",
+    msg1:"How's that gameplay huh, pretty enjoyable I bet",
+    end:":)"
 }

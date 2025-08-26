@@ -4,13 +4,14 @@ const gameManager = new GameManager([
     getLevel1Declaration,
     getLevel2Declaration,
     getLevel3Declaration,
+    getLevel4Declaration,
 ])
 
 // TEMP
 mainMenu.hide(true)
 gameManager.startGame()
 
-gameManager.skipTo(2)
+gameManager.skipTo(3)
 gameManager.musicManager.muted = true
 // TEMP
 

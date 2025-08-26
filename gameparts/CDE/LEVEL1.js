@@ -87,6 +87,8 @@ function getLevel1Declaration(square, gameManager) {
 
 
     // End
+    const endText = square.addObject(new GameText(S.end, [right-standardSize/2, bottom-standardSize/2], GameText.DEFAULT_END_COLOR, textProfile2_16px))
+    endText.obj.playAnim(new Anim(prog=>endText.obj.rotation = prog*360, -1000))
     square.addObject(Collision.createEnd([[right-standardSize, bottom-standardSize],[right, bottom]], ()=>{
         gameManager.progress = LEVEL
         player.cinematicMoveTo(nextSquare.spawnPos, 7250)
