@@ -102,7 +102,7 @@ function getLevel2Declaration(square, gameManager) {
     square.addObject(Collision.createAreaEnter([[left, top], [left+standardSize*2, top+standardDist]], ()=>appearingText1.smoothFade(GameText.FADINGS.IN, 500), null, ()=>appearingText1.smoothFade(GameText.FADINGS.OUT, 500)))
     
     // End
-    const endText = square.addObject(new GameText(S.end, [1020, 150], GameText.DEFAULT_END_COLOR, textProfile1_22px))
+    const endText = square.addObject(new GameText(S.end, [1020, 150], GameText.DEFAULT_END_COLOR, textProfile1_22px, true))
     endText.obj.playAnim(new Anim(prog=>endText.obj.rotation = prog*360, -1000))
     square.addObject(Collision.createEnd([[left+standardDist, top],[left+standardDist*2, top+standardDist*1.5]], ()=>{
         const transitionTime = 5000

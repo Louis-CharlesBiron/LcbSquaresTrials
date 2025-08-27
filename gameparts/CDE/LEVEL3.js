@@ -132,7 +132,8 @@ function getLevel3Declaration(square, gameManager) {
 
       // TEXT
       const appearingText1 = square.addObject(new GameText(S.tuto6, [centerX, bottom+standardSize], textColor, textProfile2_16px, true)),
-            appearingText2 = square.addObject(new GameText(S.msg1, [centerX, top-standardSize], textColor, textProfile2_16px, true))
+            appearingText2 = square.addObject(new GameText(S.msg1, [centerX, top-standardSize], textColor, textProfile2_16px, true)),
+            appearingText3 = square.addObject(new GameText(S.endText3, [centerX, top-standardSize], textColor, textProfile2_16px, true))
 
       ;[
             square.addObject(new GameText(S.huh, [1750, 350], textColor, textProfile3_108px)),
@@ -147,6 +148,8 @@ function getLevel3Declaration(square, gameManager) {
             square.addObject(new GameText(S.left, [2265, 640], textColor, textProfile1_22px))
       ].forEach(el=>shake(el.obj))
 
+
+
       // INTERACTIONS
       
       // Fading text
@@ -156,19 +159,27 @@ function getLevel3Declaration(square, gameManager) {
 
       // INTERACTIONS
       // End
-      const endText = square.addObject(new GameText(S.end, [2215, 300], GameText.DEFAULT_END_COLOR, textProfile1_22px))
+      const endText = square.addObject(new GameText(S.end, [2215, 300], GameText.DEFAULT_END_COLOR, textProfile1_22px, true))
       endText.obj.playAnim(new Anim(prog=>endText.obj.rotation = prog*360, -1000))
       square.addObject(Collision.createEnd([[2175, 290],[2240, 330]], ()=>{
             const transitionTime = 27500
             gameManager.progress = LEVEL
             gameManager.player.multipleCinematicMoves(transitionTime, [2325, 450], [right+standardSize, top-standardSize], [left-standardSize*3, top-standardSize], [1583,392], [1554,788], [1055,767], [753,477], [837,325], [719,199], [732,605], [847,382], [812,55], [1485,-79], [1556,321], [1466,-36], [777,-80], [1346,52], [1551,-26], [1564,346], [1423,519], [1571,597], [1555,827], [296,778], [64,734], [32,204], [284,35], [633,38], [603,510], gameManager.squares[LEVEL].spawnPos)
             
+            appearingText3.smoothFade(GameText.FADINGS.IN, 1000)
+            appearingText3.obj.activationMargin = true
+            appearingText3.obj.anchorPos = gameManager.player.obj
+            appearingText3.obj.pos = [0, -40]
+
             setTimeout(()=>{
                   gameManager.CVS.centerViewTo(gameManager.squares[LEVEL-1].obj.getCenter(), 1000)
             }, transitionTime/6)
             setTimeout(()=>{
                   gameManager.playSong(LEVEL)
                   gameManager.CVS.centerViewTo(nextSquare.obj.getCenter(), 2000)
+
+                  appearingText3.smoothFade(GameText.FADINGS.OUT, 3500)
+                  setTimeout(()=>appearingText3.obj.remove(), 3500)
             }, transitionTime+2000)
       }))
 
