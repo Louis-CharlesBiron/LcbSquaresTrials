@@ -47,7 +47,14 @@ class Player {
         this._collisions = []
         this._physicalState = false
         const interactions = this._interactions = Object.keys(Player.KEYBINDS).reduce((a,b)=>(a[b.toLowerCase()]=null,a),{}),
-              settings = this._settings = {showHitboxes:false, noclip:Player.NOCLIP_LEVELS.DISABLED, showTrajectory:false, showScreenCenter:false, showCoordinates:false},
+              settings = this._settings = {
+                showHitboxes:false,
+                noclip:Player.NOCLIP_LEVELS.DISABLED,
+                showTrajectory:false,
+                showScreenCenter:false,
+                showCoordinates:false,
+                enableSVGFilterDeathEffect:false
+            },
               render = CVS.render
 
         // PLAYER LOOP
@@ -289,14 +296,14 @@ class Player {
             }, time))
 
             setTimeout(()=>{
-                obj.filter = "url(#deathEffect)"
+                if (this._settings.enableSVGFilterDeathEffect) obj.filter = "url(#deathEffect)"
                 this.cinematicMoveTo(spawnPos, time)
             }, delay)
             setTimeout(()=>{
                 this.enableMovements()
                 this._jumpCount = Player.DEFAULT_MAX_JUMP_COUNT
                 obj.color = Player.DEFAULT_COLOR
-                obj.filter = null
+                if (this._settings.enableSVGFilterDeathEffect) obj.filter = null
                 this._isDead = false
             }, delay+time)
         }

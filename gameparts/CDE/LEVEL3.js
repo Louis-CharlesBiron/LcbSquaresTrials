@@ -4,8 +4,6 @@ function getLevel3Declaration(square, gameManager) {
           standardDist = 75, standardSize = 25, standardSpikeSize = Spike.DEFAULT_HEIGHT, strictSpikeSize = Spike.DEFAULT_WIDTH
           textColor = [135, 206, 235, 0]
 
-          console.log(square, left, top, right, bottom)
-
       // SET SPAWNPOS
       square.spawnPos = [right-standardSize, bottom-standardDist]
       const deathCB = Spike.GET_DEFAULT_DEATH_COLLISION_CB(square.spawnPos), orbCB = Orb.GET_DEFAULT_ORB_COLLISION_CB()
@@ -161,8 +159,17 @@ function getLevel3Declaration(square, gameManager) {
       const endText = square.addObject(new GameText(S.end, [2215, 300], GameText.DEFAULT_END_COLOR, textProfile1_22px))
       endText.obj.playAnim(new Anim(prog=>endText.obj.rotation = prog*360, -1000))
       square.addObject(Collision.createEnd([[2175, 290],[2240, 330]], ()=>{
-          gameManager.progress = LEVEL
-          player.obj.moveTo(gameManager.squares[LEVEL].spawnPos, 2000, Anim.easeOutQuad)
+            const transitionTime = 27500
+            gameManager.progress = LEVEL
+            gameManager.player.multipleCinematicMoves(transitionTime, [2325, 450], [right+standardSize, top-standardSize], [left-standardSize*3, top-standardSize], [1583,392], [1554,788], [1055,767], [753,477], [837,325], [719,199], [732,605], [847,382], [812,55], [1485,-79], [1556,321], [1466,-36], [777,-80], [1346,52], [1551,-26], [1564,346], [1423,519], [1571,597], [1555,827], [296,778], [64,734], [32,204], [284,35], [633,38], [603,510], gameManager.squares[LEVEL].spawnPos)
+            
+            setTimeout(()=>{
+                  gameManager.CVS.centerViewTo(gameManager.squares[LEVEL-1].obj.getCenter(), 1000)
+            }, transitionTime/6)
+            setTimeout(()=>{
+                  gameManager.playSong(LEVEL)
+                  gameManager.CVS.centerViewTo(nextSquare.obj.getCenter(), 2000)
+            }, transitionTime+2000)
       }))
 
 

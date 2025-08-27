@@ -24,6 +24,10 @@ class Orb {
         if (this._obj.isWithin(pos, Player.DEFAULT_RADIUS*Orb.DEFAULT_OUTLINE_RADIUS_MULTIPLIER) && GameManager.instance.player.interactions.up) {
             if (!this._hasInteraction && CDEUtils.isFunction(this._collisionCB)) this._collisionCB(this)
             this._hasInteraction = true
+            this._obj.playAnim(new Anim(prog=>{
+                this._obj.a = CDEUtils.mod(1, (1-prog), 0.5)
+                this._obj.radius += Math.sin(prog*Math.PI)*1.5
+            }, 500, Anim.easeOutBack))
         } else if (this._hasInteraction && !GameManager.instance.player.interactions.up) this._hasInteraction = false
     }
 

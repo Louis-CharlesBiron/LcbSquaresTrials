@@ -55,6 +55,7 @@ class GameManager {
         CVS.setMouseMove(mMove)
         CVS.setMouseLeave(mMove)
         CVS.setMouseDown(()=>{
+            if (this._CVS.typingDevice.isDown(TypingDevice.KEYS.SHIFT)) navigator.clipboard.writeText("["+(this._CVS.mouse.x|0)+","+(this._CVS.mouse.y|0)+"]")
             if (this._CVS.typingDevice.isDown(TypingDevice.KEYS.CONTROL)) this._player.pos = this._CVS.mouse.pos
         })
         CVS.setMouseUp()
