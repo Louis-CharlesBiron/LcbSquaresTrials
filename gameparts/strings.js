@@ -46,4 +46,7 @@ Hopefully I'll get through building the rest of it.
 So yeah idk what to ramble about anymore, gotta find another gimmic for the next part again, prob gonna be like some dash thing or idk
 ig you'll see, as i'm writing this, it's nowhere near coded yet, so i don't even know if it'll make the cut
 Not really your problem ig, ok enjoy now, cya, man the transition must be over by now`,
+
+    tuto7:"",
+    msg2:"Maybe this room is a bit easier than the other ones, but oh well, good for you! Enjoy the break :)"
 }

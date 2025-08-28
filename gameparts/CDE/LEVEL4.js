@@ -10,7 +10,7 @@ function getLevel4Declaration(square, gameManager) {
 
       // OBSTACLES
       square.addObject(new Obstacle([centerX-standardSize*2, bottom-standardSize], standardSize*2, standardSize)) // SMALL SPAWN BLOCK
-      square.addObject(new Obstacle([centerX-standardSize*3, bottom-standardDist*2.5], standardSize, standardDist*2.5)) // SPAWN LEFT BLOCKER
+      square.addObject(new Obstacle([centerX-standardSize*5.5, bottom-standardDist*2.35], standardSize*3.55, standardDist*2.35)) // SPAWN LEFT BLOCKER
 
       square.addObject(new Spike([centerX+standardSpikeSize*2, bottom-standardSpikeSize], null, deathCB))
       square.addObject(new Spike([centerX+standardSpikeSize*2, bottom-standardSpikeSize*2], null, deathCB))
@@ -75,20 +75,96 @@ function getLevel4Declaration(square, gameManager) {
       square.addObject(new Spike([right-standardSpikeSize*9.5, top], Spike.ROTATIONS.BOTTOM, deathCB))
       square.addObject(new Spike([right-standardSpikeSize*10.5, top], Spike.ROTATIONS.BOTTOM, deathCB))
       square.addObject(new Spike([right-standardSpikeSize*11.5, top], Spike.ROTATIONS.BOTTOM, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*11.5, top+standardSize], Spike.ROTATIONS.BOTTOM, deathCB))
       square.addObject(new Spike([right-standardSpikeSize*12.5, top], Spike.ROTATIONS.BOTTOM, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*12.5, top+standardSize], Spike.ROTATIONS.BOTTOM, deathCB))
       square.addObject(new Spike([right-standardSpikeSize*13.5, top], Spike.ROTATIONS.BOTTOM, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*13.5, top+standardSize], Spike.ROTATIONS.BOTTOM, deathCB))
       square.addObject(new Spike([right-standardSpikeSize*14.5, top], Spike.ROTATIONS.BOTTOM, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*14.5, top+standardSize], Spike.ROTATIONS.BOTTOM, deathCB))
       square.addObject(new Spike([right-standardSpikeSize*15.5, top], Spike.ROTATIONS.BOTTOM, deathCB))
-      square.addObject(new Spike([right-standardSpikeSize*16.5, top], Spike.ROTATIONS.BOTTOM, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*15.5, top+standardSize], Spike.ROTATIONS.BOTTOM, deathCB))
+
+      square.addObject(new Spike([right-standardSpikeSize*9.5, top+standardSpikeSize], Spike.ROTATIONS.BOTTOM, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*9.5, top+standardSpikeSize*2], Spike.ROTATIONS.BOTTOM, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*9.5, top+standardSpikeSize*3], Spike.ROTATIONS.BOTTOM, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*9.5, top+standardSpikeSize*4], Spike.ROTATIONS.BOTTOM, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*9.5, top+standardSpikeSize*5], Spike.ROTATIONS.BOTTOM, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*9.5, top+standardSpikeSize*6], Spike.ROTATIONS.BOTTOM, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*9.5, top+standardSpikeSize*7], Spike.ROTATIONS.BOTTOM, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*9.5, top+standardSpikeSize*8], Spike.ROTATIONS.BOTTOM, deathCB))
 
       square.addObject(new Spike([right-standardSpikeSize*6, top+standardSpikeSize*8.2], Spike.ROTATIONS.BOTTOM, deathCB))
       square.addObject(new Spike([right-standardSpikeSize*7, top+standardSpikeSize*9], Spike.ROTATIONS.TOP, deathCB))
       square.addObject(new Spike([right-standardSpikeSize*8, top+standardSpikeSize*9], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*9, top+standardSpikeSize*9], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*10, top+standardSpikeSize*9], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*11, top+standardSpikeSize*9], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*12, top+standardSpikeSize*9], Spike.ROTATIONS.TOP, deathCB))
 
+      square.addObject(new Obstacle([left+standardDist*2, top+standardSpikeSize*10], standardDist*3, standardSize)) // MIDDLE DOUBLE SPIKE PLATEFORM
 
+      square.addObject(new Spike([right-standardSpikeSize*10.36, top+standardSpikeSize*11.15], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*10.36-strictSpikeSize, top+standardSpikeSize*11.15], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*10.36-strictSpikeSize*2, top+standardSpikeSize*11.15], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*10.36-strictSpikeSize*3, top+standardSpikeSize*12.15], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*10.36-strictSpikeSize*3, top+standardSpikeSize*13.15], Spike.ROTATIONS.BOTTOM, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*11.36-strictSpikeSize*3, top+standardSpikeSize*14.15], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*11.36-strictSpikeSize*3, top+standardSpikeSize*15.15], Spike.ROTATIONS.BOTTOM, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*11.36-strictSpikeSize*3, top+standardSpikeSize*16.15], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*11.36-strictSpikeSize*2, top+standardSpikeSize*16.15], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*11.36-strictSpikeSize*4, top+standardSpikeSize*16.15], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*11.36-strictSpikeSize*5, top+standardSpikeSize*16.15], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*11.36-strictSpikeSize*6, top+standardSpikeSize*16.15], Spike.ROTATIONS.TOP, deathCB))
 
+      let hasTeleported = false
+      square.addObject(new Orb([left+standardSize*5.6, bottom-standardSize*2.5], ()=>{
+            if (!hasTeleported) player.multipleCinematicMoves(3000, [244,1412], [207,1357], [115,1142])
+            hasTeleported = true
+      }))
 
-      square.addObject(new Orb([left+standardSpikeSize*.5, bottom-standardSpikeSize*2], orbCB))
+      square.addObject(new Orb([left+standardDist, top+standardDist*3], Orb.GET_DEFAULT_ORB_COLLISION_CB(100), 10, Color.hotpink))
+      square.addObject(new Orb([left+standardDist*1.5, top+standardDist*3], Orb.GET_DEFAULT_ORB_COLLISION_CB(100), 10, Color.hotpink))
+      square.addObject(new Orb([left+standardDist*2, top+standardDist*3], Orb.GET_DEFAULT_ORB_COLLISION_CB(100), 10, Color.hotpink))
+      square.addObject(new Orb([left+standardDist*2.5, top+standardDist*3], Orb.GET_DEFAULT_ORB_COLLISION_CB(100), 10, Color.hotpink))
+      square.addObject(new Orb([left+standardDist*2.5, top+standardDist*2.5], Orb.GET_DEFAULT_ORB_COLLISION_CB(100), 10, Color.hotpink))
+      square.addObject(new Orb([left+standardDist*2.5, top+standardDist*2], Orb.GET_DEFAULT_ORB_COLLISION_CB(100), 10, Color.hotpink))
+      square.addObject(new Orb([left+standardDist*2.5, top+standardDist*1.5], Orb.GET_DEFAULT_ORB_COLLISION_CB(100), 10, Color.hotpink))
+      square.addObject(new Orb([left+standardDist*2.5, top+standardDist], Orb.GET_DEFAULT_ORB_COLLISION_CB(100), 10, Color.hotpink))
+      square.addObject(new Orb([left+standardDist*2, top+standardDist], Orb.GET_DEFAULT_ORB_COLLISION_CB(100), 10, Color.hotpink))
+      square.addObject(new Orb([left+standardDist*1.5, top+standardDist], Orb.GET_DEFAULT_ORB_COLLISION_CB(100), 10, Color.hotpink))
+      square.addObject(new Orb([left+standardDist, top+standardDist], Orb.GET_DEFAULT_ORB_COLLISION_CB(100), 10, Color.hotpink))
+      square.addObject(new Orb([left+standardDist*.5, top+standardDist], Orb.GET_DEFAULT_ORB_COLLISION_CB(100), 10, Color.hotpink))
+
+      square.addObject(new Spike([left+strictSpikeSize*2.5, top+standardSpikeSize*7], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([left+strictSpikeSize*3.5, top+standardSpikeSize*7], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([left+strictSpikeSize*4.5, top+standardSpikeSize*7], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([left+strictSpikeSize*5.5, top+standardSpikeSize*7], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([left+strictSpikeSize*6.5, top+standardSpikeSize*7], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([left+strictSpikeSize*7.5, top+standardSpikeSize*7], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([left+strictSpikeSize*7.5, top+standardSpikeSize*6], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([left+strictSpikeSize*7.5, top+standardSpikeSize*5], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([left+strictSpikeSize*7.5, top+standardSpikeSize*4], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([left+strictSpikeSize*7.5, top+standardSpikeSize*3], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([left+strictSpikeSize*7.5, top+standardSpikeSize*2], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([left+strictSpikeSize*7.5, top+standardSpikeSize], Spike.ROTATIONS.TOP, deathCB))
+
+      square.addObject(new Spike([left+strictSpikeSize*2.5, top+standardSpikeSize*5], Spike.ROTATIONS.BOTTOM, deathCB))
+      square.addObject(new Spike([left+strictSpikeSize*3.5, top+standardSpikeSize*5], Spike.ROTATIONS.BOTTOM, deathCB))
+      square.addObject(new Spike([left+strictSpikeSize*4.5, top+standardSpikeSize*5], Spike.ROTATIONS.BOTTOM, deathCB))
+      square.addObject(new Spike([left+strictSpikeSize*5.5, top+standardSpikeSize*5], Spike.ROTATIONS.BOTTOM, deathCB))
+      square.addObject(new Spike([left+strictSpikeSize*5.5, top+standardSpikeSize*4], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([left+strictSpikeSize*5.5, top+standardSpikeSize*3.1], Spike.ROTATIONS.BOTTOM, deathCB))
+      square.addObject(new Spike([left+strictSpikeSize*5.5, top+standardSpikeSize*2.15], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([left+strictSpikeSize*4.5, top+standardSpikeSize*2.5], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([left+strictSpikeSize*3.5, top+standardSpikeSize*2.5], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([left+strictSpikeSize*2.5, top+standardSpikeSize*2.5], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([left+strictSpikeSize*1.5, top+standardSpikeSize*2.5], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([left+strictSpikeSize*.5, top+standardSpikeSize*2.5], Spike.ROTATIONS.TOP, deathCB))
+
+      square.addObject(new Obstacle([left, top+standardDist*3.5], standardDist*3.25, standardSize)) // LAST PART PLATEFORM
+
+      square.addObject(new Obstacle([left, top+standardDist*1.6], standardDist*2, standardSize*2.25)) // LAST TOP LEFT STRUCTURE
 
       
       // UTILS
@@ -114,12 +190,12 @@ function getLevel4Declaration(square, gameManager) {
 
       // INTERACTIONS
       // End
-      const endText = square.addObject(new GameText(S.end, [left, top], GameText.DEFAULT_END_COLOR, textProfile1_22px, true))
+      const endText = square.addObject(new GameText(S.end, [left+standardSize/2+2, top+standardSize/2+2], GameText.DEFAULT_END_COLOR, textProfile1_22px, true))
       endText.obj.playAnim(new Anim(prog=>endText.obj.rotation = prog*360, -1000))
-      //square.addObject(Collision.createEnd([[2175, 290],[2240, 330]], ()=>{
-      //    gameManager.progress = LEVEL
-      //    player.obj.moveTo(gameManager.squares[LEVEL].spawnPos, 2000, Anim.easeOutQuad)
-      //}))
+      square.addObject(Collision.createEnd([[left, top],[left+standardSize*1.5, top+standardSize*1.5]], ()=>{
+          gameManager.progress = LEVEL
+          player.obj.moveTo(gameManager.squares[LEVEL].spawnPos, 2000, Anim.easeOutQuad)
+      }))
 
 
 

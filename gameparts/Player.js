@@ -264,7 +264,7 @@ class Player {
         const p_ll = posArray.length, stepTime = totalTime/p_ll
         this._gravity = 0
         this._settings.noclip = Player.NOCLIP_LEVELS.ONLY_SOLIDS
-        for (let i=0;i<p_ll;i++) setTimeout(()=>this._obj.moveTo(posArray[i], stepTime, Anim.linear), stepTime*i)
+        for (let i=0;i<p_ll;i++) setTimeout(()=>this._obj.moveTo(posArray[i], stepTime, Anim.linear), stepTime*i+10)
         setTimeout(()=>{
             this._settings.noclip = Player.NOCLIP_LEVELS.DISABLED
             this._gravity = Player.DEFAULT_GRAVITY
