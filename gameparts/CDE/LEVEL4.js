@@ -121,7 +121,7 @@ function getLevel4Declaration(square, gameManager) {
       square.addObject(new Orb([left+standardSize*5.6, bottom-standardSize*2.5], ()=>{
             if (!hasTeleported) player.multipleCinematicMoves(3000, [244,1412], [207,1357], [115,1142])
             hasTeleported = true
-      }))
+      }, null, Color.rebeccapurple))
 
       square.addObject(new Orb([left+standardDist, top+standardDist*3], Orb.GET_DEFAULT_ORB_COLLISION_CB(100), 10, Color.hotpink))
       square.addObject(new Orb([left+standardDist*1.5, top+standardDist*3], Orb.GET_DEFAULT_ORB_COLLISION_CB(100), 10, Color.hotpink))
@@ -180,12 +180,36 @@ function getLevel4Declaration(square, gameManager) {
             textProfile3_108px = CVS.render.textProfile3.update(TextStyles.getFontStyleDeclaration("monospace", "108px"))
 
       // TEXT
-      const appearingText1 = square.addObject(new GameText(S.tuto6, [centerX, bottom+standardSize], textColor, textProfile2_16px, true))
+      const appearingText1 = square.addObject(new GameText(S.tuto8, [right+standardSize*4, centerY+standardDist*.1], textColor, textProfile2_16px, true))
+
+      square.addObject(new GameText(S.msg2, [centerX, bottom+standardSize], textColor, textProfile2_16px))
+      square.addObject(new GameText(S.tuto7, [centerX+standardDist*1.75, bottom-standardDist], textColor, textProfile2_16px))
+      square.addObject(new GameText(S.msg3, [630,1124], textColor, textProfile2_16px))
+      square.addObject(new GameText(S.left, [564,1084], textColor, textProfile2_16px))
+      square.addObject(new GameText(S.up, [508,1081], textColor, textProfile2_16px))
+      square.addObject(new GameText(S.up, [508,1000], textColor, textProfile2_16px))
+      square.addObject(new GameText(S.left, [490,944], textColor, textProfile2_16px))
+      square.addObject(new GameText(S.down, [401,970], textColor, textProfile2_16px))
+      square.addObject(new GameText(S.down, [431,1012], textColor, textProfile2_16px))
+      square.addObject(new GameText(S.down, [415,1054], textColor, textProfile2_16px))
+      square.addObject(new GameText(S.down, [431,1122], textColor, textProfile2_16px))
+      square.addObject(new GameText(S.up, [410,1203], textColor, textProfile2_16px))
+      square.addObject(new GameText(S.up, [450,1203], textColor, textProfile2_16px))
+      square.addObject(new GameText(S.msg4, [430,1288], textColor, textProfile2_16px))
+      square.addObject(new GameText(S.msg5, [140,1130], textColor, textProfile2_16px))
+
+
+      ;[
+            square.addObject(new GameText(S.hey, [619,1024], textColor, textProfile3_108px)),
+            square.addObject(new GameText(S.tuto9, [180,1292], textColor, textProfile2_16px)),
+            square.addObject(new GameText(S.huh, [165,1403], textColor, textProfile3_108px)),
+      ].forEach(el=>shake(el.obj))
+
 
       // INTERACTIONS
       
       // Fading text
-      square.addObject(Collision.createAreaEnter([[right-standardDist, bottom-standardSize*3], [right, bottom]], ()=>appearingText1.smoothFade(GameText.FADINGS.IN, 500), null, ()=>appearingText1.smoothFade(GameText.FADINGS.OUT, 500)))
+      square.addObject(Collision.createAreaEnter([[535, 1300], [696,1350]], ()=>appearingText1.smoothFade(GameText.FADINGS.IN, 500), null, ()=>appearingText1.smoothFade(GameText.FADINGS.OUT, 500)))
       
 
       // INTERACTIONS
@@ -193,10 +217,15 @@ function getLevel4Declaration(square, gameManager) {
       const endText = square.addObject(new GameText(S.end, [left+standardSize/2+2, top+standardSize/2+2], GameText.DEFAULT_END_COLOR, textProfile1_22px, true))
       endText.obj.playAnim(new Anim(prog=>endText.obj.rotation = prog*360, -1000))
       square.addObject(Collision.createEnd([[left, top],[left+standardSize*1.5, top+standardSize*1.5]], ()=>{
-          gameManager.progress = LEVEL
-          player.obj.moveTo(gameManager.squares[LEVEL].spawnPos, 2000, Anim.easeOutQuad)
+            const transitionTime = 4000
+            gameManager.progress = LEVEL
+            gameManager.player.multipleCinematicMoves(transitionTime, [84,838], [276,814], [334,869], [444,831], [556,867], [698,816], gameManager.squares[LEVEL].spawnPos)
+            
+            setTimeout(()=>{
+                  gameManager.playSong(LEVEL)
+                  gameManager.CVS.centerViewTo(nextSquare.obj.getCenter(), 2000)
+
+            }, transitionTime+500)
       }))
-
-
 
 }

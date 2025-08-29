@@ -5,7 +5,7 @@ class GameManager {
     static DEFAULT_SONG_FOLDER_PATH = "assets/music/"
     static DEFAULT_SONG_NAME_PREFIX = "song"
     static DEFAULT_SONG_EXTENSION = ".mp3"
-    static DEFAULT_FPS_CAP = null
+    static DEFAULT_FPS_CAP = 60
     
     constructor(levelDeclarations) {
         if (!GameManager.instance) GameManager.instance = this

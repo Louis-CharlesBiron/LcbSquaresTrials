@@ -47,6 +47,25 @@ So yeah idk what to ramble about anymore, gotta find another gimmic for the next
 ig you'll see, as i'm writing this, it's nowhere near coded yet, so i don't even know if it'll make the cut
 Not really your problem ig, ok enjoy now, cya, man the transition must be over by now`,
 
-    tuto7:"",
-    msg2:"Maybe this room is a bit easier than the other ones, but oh well, good for you! Enjoy the break :)"
+    tuto7:"Tip: Hold 'down' and 'up'",
+    msg2:`Maybe this room is a bit easier than the other ones.
+But oh well, good for you! Enjoy the break :)`,
+    tuto8:` ←
+Next jump is
+pretty easy:
+Start by holding
+'down' and 'up'
+then, release
+'down' mid jump.
+Should work :)
+ ←`,
+    msg3:"Pretty easy,\ntold ya",
+    msg4:`Quite cozy
+around here ngl
+
+ᓚᘏᗢ`,
+    tuto9:`CLICK ORB
+DOWN THERE!!
+↓ ↓`,
+    msg5:`final\nstretch`
 }
