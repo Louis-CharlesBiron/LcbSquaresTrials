@@ -27,6 +27,7 @@ class Player {
     static DEFAULT_COLOR = [255, 0, 0, 1]
     static DEFAULT_RESPAWN_DELAY = 200
     static DEFAULT_RESPAWN_TIME = 450
+    static DEFAULT_BOOST_TIME = 400
 
     constructor(CVS, spawnPos) {
         this._obj = new Dot(spawnPos, Player.DEFAULT_RADIUS, Player.DEFAULT_COLOR, null, null, true)
@@ -43,6 +44,7 @@ class Player {
         this._movementLocked = false
         this._isDead = false
         this._deathCount = 0
+        this._boostAnim = null
 
         this._collisions = []
         this._physicalState = false
@@ -84,6 +86,7 @@ class Player {
             }
 
             if (this._jumpAnim) this._jumpAnim.getFrame(CVS.timeStamp, deltaTime)
+            if (this._boostAnim) this._boostAnim.getFrame(CVS.timeStamp, deltaTime)
 
             // SIZE CHANGES
             //if (interactions.smaller && player.radius > Player.MINIMAL_RADIUS) {
@@ -132,10 +135,18 @@ class Player {
                 const render = CVS.render, viewPos = CVS.viewPos
                 render.stroke(Render.getLine([CVS.width/2-viewPos[0], -viewPos[1]], [CVS.width/2-viewPos[0], CVS.height-viewPos[1]] ), [255,0,0,1])
                 render.stroke(Render.getLine([-viewPos[0], CVS.height/2-viewPos[1]], [CVS.width-viewPos[0], CVS.height/2-viewPos[1]]), [255,0,0,1])
-
             }
         }
         CVS.add(this._obj)
+    }
+
+    boost(distances, time=Player.DEFAULT_BOOST_TIME) {
+        const [dx, dy] = distances
+        if (this._boostAnim) this._boostAnim.end(this._obj.cvs.deltaTime)
+        this._boostAnim = new Anim((prog, i, deltaTime)=>{
+            if (dx) this._nextPosX += (1-prog)*dx*deltaTime
+            if (dy) this._nextPosY -= (1-prog)*dy*deltaTime
+        }, time, Anim.easeInOutQuad, ()=>this._boostAnim = null)
     }
 
     /**
