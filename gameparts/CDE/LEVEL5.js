@@ -6,7 +6,7 @@ function getLevel5Declaration(square, gameManager) {
 
       // SET SPAWNPOS
       square.spawnPos = [left+standardSize, top+standardSize]
-      const deathCB = Spike.GET_DEFAULT_DEATH_COLLISION_CB(square.spawnPos), orbCB = Orb.GET_DEFAULT_ORB_COLLISION_CB()
+      const deathCB = Spike.GET_DEFAULT_DEATH_COLLISION_CB(square.spawnPos), orbCB = Orb.GET_DEFAULT_ORB_COLLISION_CB(), boostOrb_radius = 17
 
       // OBSTACLES
       square.addObject(new Obstacle([left, top+standardSize*2], standardDist*2, standardSize)) // SMALL SPAWN BLOCK
@@ -28,7 +28,6 @@ function getLevel5Declaration(square, gameManager) {
       square.addObject(new Spike([left+standardSpikeSize*8, top+standardSpikeSize*2.5], Spike.ROTATIONS.TOP, deathCB))
       
       square.addObject(new Spike([left+standardSpikeSize*9, top+standardSpikeSize/1.5], Spike.ROTATIONS.TOP, deathCB))
-      square.addObject(new Obstacle([left+standardDist*4, top+standardSize*2], standardDist*3.75, standardSize*5)) // BIG NEXT BLOCK
 
       square.addObject(new Spike([left+standardSpikeSize*11, top+standardSpikeSize/2], Spike.ROTATIONS.TOP, deathCB))
       square.addObject(new Spike([left+standardSpikeSize*10.45, top], Spike.ROTATIONS.BOTTOM, deathCB))
@@ -41,9 +40,65 @@ function getLevel5Declaration(square, gameManager) {
       square.addObject(new Spike([left+standardSpikeSize*15.25, top+standardSpikeSize/2], Spike.ROTATIONS.TOP, deathCB))
       square.addObject(new Spike([left+standardSpikeSize*16.25, top+standardSpikeSize/2], Spike.ROTATIONS.TOP, deathCB))
 
-      square.addObject(new Orb([right-standardSize/2, top+standardSize*8], ()=>player.boost([-1200, 100]), 15, Color.lime))
+      square.addObject(new Spike([right-standardSpikeSize*0.5, top+standardDist*3], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*1.5, top+standardDist*3], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*2.5, top+standardDist*3], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*3.5, top+standardDist*3], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*4, top+standardDist*3], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*6.5, top+standardDist*3], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*6.5, top+standardDist*3-standardSpikeSize], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*6.5, top+standardDist*3-standardSpikeSize*2], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*6.5, top+standardDist*3+standardSpikeSize], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*6.5, top+standardDist*3+standardSpikeSize*2], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*6.5, top+standardDist*3+standardSpikeSize*3-0.25], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*5.5, top+standardDist*3+standardSpikeSize*3-0.25], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*4.5, top+standardDist*3+standardSpikeSize*3-0.25], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*3.5, top+standardDist*3+standardSpikeSize*3-0.25], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*2.5, top+standardDist*3+standardSpikeSize*3-0.25], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*1.5, top+standardDist*3+standardSpikeSize*2.5], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*0.75, top+standardDist*3+standardSpikeSize*2.5], Spike.ROTATIONS.TOP, deathCB))
 
-      // VERY SPAMMY CLICK PARTTERN LIKE, 1 2 - 1 2 3 - 1 2 - 1 2 3 4, all boost orbs
+      square.addObject(new Obstacle([left+standardDist*4, top+standardSize*2], standardDist*3.75, standardSize*5)) // BIG NEXT BLOCK
+
+      square.addObject(new Orb([right-standardSize/2, top+standardSize*8], ()=>player.boost([-1200, 100]), boostOrb_radius, Color.lime))
+      square.addObject(new Orb([right-standardDist*2.5, top+standardSize*8], ()=>player.boost([625, -500]), boostOrb_radius, Color.lime))
+      square.addObject(new Orb([right-standardDist*2, top+standardSize*12], ()=>player.boost([1000, 500]), boostOrb_radius, Color.lime))
+
+      square.addObject(new Obstacle([left+standardDist*4, top+standardSize*15], standardDist*4, standardSize))
+
+      square.addObject(new Spike([right-standardSpikeSize*7.5, top+standardDist*3+standardSpikeSize*3.5], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*7.5, top+standardDist*3+standardSpikeSize*2.5], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*7.5, top+standardDist*3+standardSpikeSize*1.5], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*7.5, top+standardDist*3+standardSpikeSize*0.5], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*7.5, top+standardDist*3+standardSpikeSize*-0.5], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*7.5, top+standardDist*3+standardSpikeSize*-1.75], Spike.ROTATIONS.BOTTOM, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*8.25, top+standardDist*3+standardSpikeSize*3.5], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*9, top+standardDist*3+standardSpikeSize*3.5], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*9, top+standardDist*3+standardSpikeSize*2.5], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*9, top+standardDist*3+standardSpikeSize*1.5], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*9, top+standardDist*3+standardSpikeSize*-0.25], Spike.ROTATIONS.BOTTOM, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*9, top+standardDist*3+standardSpikeSize*-1.25], Spike.ROTATIONS.BOTTOM, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*9, top+standardDist*3+standardSpikeSize*-2.25], Spike.ROTATIONS.BOTTOM, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*9-strictSpikeSize, top+standardDist*3+standardSpikeSize*1], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([right-standardSpikeSize*9-strictSpikeSize, top+standardDist*3+standardSpikeSize*-0.75], Spike.ROTATIONS.BOTTOM, deathCB))
+
+      square.addObject(new Orb([1124,1143], ()=>player.boost([-550, 800]), boostOrb_radius, Color.lime))
+      square.addObject(new Orb([1019,1040], ()=>player.boost([-600, 100]), boostOrb_radius, Color.lime))
+
+      square.addObject(new Obstacle([left, top+standardSize*9], standardDist, standardSize))
+      square.addObject(new Obstacle([left, top+standardSize*3.5], standardDist*3.5, standardSize))
+      square.addObject(new Obstacle([left+standardDist*3, top+standardSize*4.5], standardDist, standardSize))
+
+      square.addObject(new Spike([left+strictSpikeSize*.5, top+standardSpikeSize*4.5], Spike.ROTATIONS.BOTTOM, deathCB))
+      square.addObject(new Spike([left+strictSpikeSize*1.5, top+standardSpikeSize*4], Spike.ROTATIONS.BOTTOM, deathCB))
+      square.addObject(new Spike([left+strictSpikeSize*2.5, top+standardSpikeSize*5.5], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([1120,1161], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([1085,1150], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([1043,1150], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([1018,1144], Spike.ROTATIONS.TOP, deathCB))
+      square.addObject(new Spike([998,1135], Spike.ROTATIONS.TOP, deathCB))
+
+
 
 
       // UTILS
