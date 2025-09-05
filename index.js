@@ -9,11 +9,11 @@ const gameManager = new GameManager([
 ])
 
 // TEMP
-mainMenu.hide(true)
-gameManager.startGame()
-
-gameManager.skipTo(4)
-gameManager.musicManager.muted = true
+//mainMenu.hide(true)
+//gameManager.startGame()
+//
+//gameManager.skipTo(4)
+//gameManager.musicManager.muted = true
 // TEMP
 
 

@@ -1,4 +1,7 @@
 const S = {
+    title:"LCB SQUARES TRIALS",
+    start:"Play",
+
     down:"↓",
     up:"↑",
     right:"→",
